@@ -7,6 +7,7 @@ using System.Data.Odbc;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -25,65 +26,31 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
             Bind_ImprestCardNo_Dropdown();
             Bind_AllocationHead_Dropdown();
 
-            // assign latet ref no to bill header
-            int refNo = GetRefID();
-            txtRefNo.Text = refNo.ToString();
-            Session["BillHeaderRefNo"] = refNo.ToString();
+            //int billReferenceNo = GetRefID();
+            //txtRefNo.Text = billReferenceNo.ToString();
+            //Session["BillHeaderRefNo"] = billReferenceNo.ToString();
 
             Bind_Item_Dropdown();
             Bind_UOM_Dropdown();
 
             Session["TotalBillAmount"] = "";
 
-            // alert pop-up with only message
-            //string message = $"Datatable : {}";
-            //string script = $"alert('{message}');";
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "messageScript", script, true);
+
         }
     }
 
-    //public class Api
-    //{
-    //    public string Command { get; set; }
-    //    public Dictionary<string, string> Parameters { get; set; }
-    //    public string Connection { get; set; }
-    //    public string AccessKey { get; set; }
-    //}
 
-    //private DataTable getApiCall(string sql, Dictionary<string, string> para)
-    //{
-    //    Api mPara = new Api
-    //    {
-    //        Command = sql,
-    //        Parameters = para,
-    //        Connection = "Ginie"
-    //    };
 
-    //    string jsonContent = JsonConvert.SerializeObject(mPara);
-    //    StringContent stringContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-    //    string apiUrl = "http://101.53.144.92/wms/api/Get/Table";
+    //=========================={ Fetching Reference Nos }==========================
 
-    //    using (HttpClient client = new HttpClient())
-    //    {
-    //        HttpResponseMessage response = client.PostAsync(apiUrl, stringContent).Result;
-
-    //        if (response.IsSuccessStatusCode)
-    //        {
-    //            string jsonResponse = response.Content.ReadAsStringAsync().Result;
-
-    //            DataTable dt = JsonConvert.DeserializeObject<DataTable>(jsonResponse);
-
-    //            return dt;
-    //        }
-    //        else
-    //        {
-    //            return new DataTable();
-    //        }
-    //    }
-    //}
-
-    //=========================={ Drop Down Bind }==========================
+    private void alert(string mssg)
+    {
+        // alert pop-up with only message
+        string message = mssg;
+        string script = $"alert('{message}');";
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "messageScript", script, true);
+    }
 
     private int GetRefID()
     {
@@ -97,9 +64,14 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
             object result = cmd.ExecuteScalar();
             if (result != null && result != DBNull.Value) { nextRefID = result.ToString(); }
+
+            con.Close();
             return Convert.ToInt32(nextRefID);
         }
     }
+
+
+
 
     //=========================={ Sweet Alert JS }==========================
 
@@ -200,22 +172,10 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
 
 
-
-    //=========================={ Dropdown Binding }==========================
+    //=========================={ Dropdown Bind }==========================
 
     private void Bind_Vendor_Dropdown()
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddVendor.DataSource = dt;
-        //ddVendor.DataTextField = "UserRole";
-        //ddVendor.DataValueField = "UserRole";
-        //ddVendor.DataBind();
-        //ddVendor.Items.Insert(0, new ListItem("------Select Vendor------", "0"));
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -238,17 +198,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void Bind_UnitOffice_Dropdown()
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddUnitOffice.DataSource = dt;
-        //ddUnitOffice.DataTextField = "UserRole";
-        //ddUnitOffice.DataValueField = "UserRole";
-        //ddUnitOffice.DataBind();
-        //ddUnitOffice.Items.Insert(0, new ListItem("------Select Unit / Office------", "0"));
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -271,17 +220,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void Bind_ImprestCardNo_Dropdown()
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddImprestCardNo.DataSource = dt;
-        //ddImprestCardNo.DataTextField = "UserRole";
-        //ddImprestCardNo.DataValueField = "UserRole";
-        //ddImprestCardNo.DataBind();
-        //ddImprestCardNo.Items.Insert(0, new ListItem("------Select Imprest Card No.------", "0"));
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -304,17 +242,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void Bind_ImprestCardHolder_Dropdown(string imprestCardNo)
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddImprestCardHolder.DataSource = dt;
-        //ddImprestCardHolder.DataTextField = "UserRole";
-        //ddImprestCardHolder.DataValueField = "UserRole";
-        //ddImprestCardHolder.DataBind();
-        //ddImprestCardHolder.Items.Insert(0, new ListItem("------Select Imprest Card Holder------", "0"));
-
         DataTable icDT = getImpCardDT(imprestCardNo);
 
         using (SqlConnection con = new SqlConnection(connectionString))
@@ -340,17 +267,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void Bind_AllocationHead_Dropdown()
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddAlloctHead.DataSource = dt;
-        //ddAlloctHead.DataTextField = "UserRole";
-        //ddAlloctHead.DataValueField = "UserRole";
-        //ddAlloctHead.DataBind();
-        //ddAlloctHead.Items.Insert(0, new ListItem("------Select Allocate No.------", "0"));
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -373,17 +289,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void Bind_Item_Dropdown()
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddItem.DataSource = dt;
-        //ddItem.DataTextField = "UserRole";
-        //ddItem.DataValueField = "UserRole";
-        //ddItem.DataBind();
-        //ddItem.Items.Insert(0, new ListItem("------Select Item------", "0"));
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -406,17 +311,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void Bind_UOM_Dropdown()
     {
-        //string sql = "select * from mnu751";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-
-        //ddUOM.DataSource = dt;
-        //ddUOM.DataTextField = "UserRole";
-        //ddUOM.DataValueField = "UserRole";
-        //ddUOM.DataBind();
-        //ddUOM.Items.Insert(0, new ListItem("------Select UOM------", "0"));
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -437,7 +331,7 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         }
     }
 
-    
+
 
 
     //=========================={ Drop Down Event }==========================
@@ -457,7 +351,55 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
 
 
-    //=========================={ Fetching Data }==========================
+
+    //=========================={ GridView RowDeleting }==========================
+
+    protected void Grid_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        GridView gridView = (GridView)sender;
+
+        // item gridview
+        if (gridView.ID == "itemGrid")
+        {
+            int rowIndex = e.RowIndex;
+
+            DataTable dt = ViewState["BillDetailsVS"] as DataTable;
+
+            if (dt != null && dt.Rows.Count > rowIndex)
+            {
+                dt.Rows.RemoveAt(rowIndex);
+
+                ViewState["BillDetailsVS"] = dt;
+                Session["BillDetails"] = dt;
+
+                itemGrid.DataSource = dt;
+                itemGrid.DataBind();
+            }
+        }
+
+        // document gridview
+        if (gridView.ID == "GridDocument")
+        {
+            int rowIndex = e.RowIndex;
+
+            DataTable dt = Session["DocUploadDT"] as DataTable;
+
+            if (dt != null && dt.Rows.Count > rowIndex)
+            {
+                dt.Rows.RemoveAt(rowIndex);
+
+                ViewState["DocDetailsDataTable"] = dt;
+                Session["DocUploadDT"] = dt;
+
+                GridDocument.DataSource = dt;
+                GridDocument.DataBind();
+            }
+        }
+    }
+
+
+    //=========================={ Fetching DataTable }==========================
+
     private DataTable getImpCardDT(string imprestCardNo)
     {
         using (SqlConnection con = new SqlConnection(connectionString))
@@ -498,6 +440,7 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
 
 
+
     //=========================={ Item Save Button Click Event }==========================
 
     protected void btnItemInsert_Click(object sender, EventArgs e)
@@ -511,39 +454,46 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     private void insertBillDetails()
     {
-        string refNo = Session["BillHeaderRefNo"].ToString();
-
         string item = ddItem.SelectedValue;
         string uom = ddUOM.SelectedValue;
         double price = Convert.ToDouble(txtPrice.Text.ToString());
         double qty = Convert.ToDouble(txtQty.Text.ToString());
         double amount = (price * qty);
 
-        DataTable dt = ViewState["BillDetailsVS"] as DataTable ?? createBillDatatable();
-
-        AddRowToBillDetailsDataTable(dt, refNo, item, uom, price, qty, amount);
-
-        ViewState["BillDetailsVS"] = dt;
-        Session["BillDetails"] = dt;
-
-        if (dt.Rows.Count > 0)
+        if (price >= 0.00 && qty >= 0)
         {
-            itemDiv.Visible = true;
+            DataTable dt = ViewState["BillDetailsVS"] as DataTable ?? createBillDatatable();
 
-            itemGrid.DataSource = dt;
-            itemGrid.DataBind();
+            AddRowToBillDetailsDataTable(dt, item, uom, price, qty, amount);
 
-            double totalBillAmount = 0.00;
+            ViewState["BillDetailsVS"] = dt;
+            Session["BillDetails"] = dt;
 
-            if (Session["TotalBillAmount"].ToString() != "")
+            if (dt.Rows.Count > 0)
             {
-                totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
+                itemDiv.Visible = true;
+
+                itemGrid.DataSource = dt;
+                itemGrid.DataBind();
+
+                double totalBillAmount = 0.00;
+
+                if (Session["TotalBillAmount"].ToString() != "")
+                {
+                    totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
+                }
+
+                totalBillAmount = totalBillAmount + amount;
+                Session["TotalBillAmount"] = totalBillAmount;
+
+                txtBillAmount.Text = totalBillAmount.ToString("N2");
             }
-
-            totalBillAmount = totalBillAmount + amount;
-            Session["TotalBillAmount"] = totalBillAmount;
-
-            txtBillAmount.Text = totalBillAmount.ToString("N2");
+        }
+        else
+        {
+            string title = "Negative Values";
+            string message = "please add positive values";
+            getSweetAlertErrorMandatory(title, message);
         }
     }
 
@@ -578,13 +528,13 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         return dt;
     }
 
-    private void AddRowToBillDetailsDataTable(DataTable dt, string refNo, string item, string uom, double price, double qty, double amount)
+    private void AddRowToBillDetailsDataTable(DataTable dt, string item, string uom, double price, double qty, double amount)
     {
         // Create a new row
         DataRow row = dt.NewRow();
 
         // Set values for the new row
-        row["RefNo"] = refNo;
+        //row["RefNo"] = refNo;
         row["Item"] = item;
         row["UOM"] = uom;
         row["Price"] = price;
@@ -594,6 +544,11 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         // Add the new row to the DataTable
         dt.Rows.Add(row);
     }
+    
+
+
+
+    //=========================={ Tax Head }==========================
 
     protected void ddTaxOrNot_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -609,8 +564,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         }
     }
 
-
-    //=========================={ Tax Head }==========================
     protected void GridTax_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow && (e.Row.RowState & DataControlRowState.Edit) > 0)
@@ -889,26 +842,48 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        if(GridDocument.Rows.Count > 0)
+        if (GridDocument.Rows.Count > 0)
         {
+            string billReferenceNo = GetRefID().ToString();
+            Session["BillHeaderRefNo"] = billReferenceNo.ToString();
+
             // inserting bill head
-            insertBillHeader();
+            bool isBillHeaderInserted = insertBillHeader(billReferenceNo);
 
-            // inserting item details from grid
-            insertItemDetails();
-
-            // inserting bill tax heads
-            string taxOrNot = ddTaxOrNot.SelectedValue;
-
-            if (taxOrNot == "Tax")
+            if (isBillHeaderInserted)
             {
-                insertBillTaxHeads();
+                // inserting item details from grid
+                insertItemDetails(billReferenceNo);
+
+                // inserting bill tax heads
+                string taxOrNot = ddTaxOrNot.SelectedValue;
+
+                if (taxOrNot == "Tax")
+                {
+                    insertBillTaxHeads(billReferenceNo);
+                }
+
+                // inserting documents
+                insertBilldocument(billReferenceNo);
+
+                //btnSubmit.Enabled = false;
+                //Response.Redirect("BillEntryUpdate/BillUpdate.aspx");
+
+                bool workflow = InsertWorkFlowBillEntery(billReferenceNo);
+
+                if (workflow)
+                {
+                    getSweetAlertSuccessRedirectMandatory("Bill Inserted !", "the bill has been saved successfully", "BillEntryUpdate/BillUpdate.aspx");
+                }
+                else
+                {
+                    getSweetAlertErrorMandatory("Work Flow Failed", "Please contact techical support");
+                }
             }
-
-            // inserting documents
-            insertBilldocument();
-
-            btnSubmit.Enabled = false;
+            else
+            {
+                getSweetAlertErrorMandatory("Operation Failed", "Something went wrong, please try again");
+            }
         }
         else
         {
@@ -916,51 +891,59 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         }
     }
 
-    private void insertBillHeader()
+    private bool insertBillHeader(string billReferenceNo)
     {
-        string refno = txtRefNo.Text.ToString();
-        string billNo = txtBillNo.Text.ToString();
-        DateTime billDate = DateTime.Parse(dateBillDate.Text);
-        string vendor = ddVendor.SelectedValue;
-        string unitOffice = ddUnitOffice.SelectedValue;
-        string impCardNo = ddImprestCardNo.SelectedValue;
-        string impCardHolder = ddImprestCardHolder.SelectedValue;
-        string allocateHead = ddAlloctHead.SelectedValue;
-
-        double totalBillAmount = Convert.ToDouble(Session["TotalBillAmount"]);
-
-        using (SqlConnection con = new SqlConnection(connectionString))
+        try
         {
-            con.Open();
-            string sql = $@"INSERT INTO Bills1751 (RefNo, VouNo, BillDate, Vendor, Unit, CardNo, CardHld, AlcnNo, BillAmt) 
+            string refno = billReferenceNo;
+            string billNo = txtBillNo.Text.ToString();
+            DateTime billDate = DateTime.Parse(dateBillDate.Text);
+            string vendor = ddVendor.SelectedValue;
+            string unitOffice = ddUnitOffice.SelectedValue;
+            string impCardNo = ddImprestCardNo.SelectedValue;
+            string impCardHolder = ddImprestCardHolder.SelectedValue;
+            string allocateHead = ddAlloctHead.SelectedValue;
+
+            double totalBillAmount = Convert.ToDouble(Session["TotalBillAmount"]);
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string sql = $@"INSERT INTO Bills1751 (RefNo, VouNo, BillDate, Vendor, Unit, CardNo, CardHld, AlcnNo, BillAmt) 
                             VALUES (@RefNo, @VouNo, @BillDate, @Vendor, @Unit, @CardNo, @CardHld, @AlcnNo, @BillAmt)";
-            SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@RefNo", refno);
-            cmd.Parameters.AddWithValue("@VouNo", billNo);
-            //cmd.Parameters.AddWithValue("@BillDate", billDate.ToString("dd-MM-yyyy"));
-            cmd.Parameters.AddWithValue("@BillDate", billDate);
-            cmd.Parameters.AddWithValue("@Vendor", vendor);
-            cmd.Parameters.AddWithValue("@Unit", unitOffice);
-            cmd.Parameters.AddWithValue("@CardNo", impCardNo);
-            cmd.Parameters.AddWithValue("@CardHld", impCardHolder);
-            cmd.Parameters.AddWithValue("@AlcnNo", allocateHead);
-            cmd.Parameters.AddWithValue("@BillAmt", totalBillAmount);
-            cmd.ExecuteNonQuery();
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@RefNo", refno);
+                cmd.Parameters.AddWithValue("@VouNo", billNo);
+                cmd.Parameters.AddWithValue("@BillDate", billDate);
+                cmd.Parameters.AddWithValue("@Vendor", vendor);
+                cmd.Parameters.AddWithValue("@Unit", unitOffice);
+                cmd.Parameters.AddWithValue("@CardNo", impCardNo);
+                cmd.Parameters.AddWithValue("@CardHld", impCardHolder);
+                cmd.Parameters.AddWithValue("@AlcnNo", allocateHead);
+                cmd.Parameters.AddWithValue("@BillAmt", totalBillAmount);
+                //cmd.ExecuteNonQuery();
 
-            //SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            //DataTable dt = new DataTable();
-            //ad.Fill(dt);
+                SqlDataAdapter ad = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                ad.Fill(dt);
 
-            con.Close();
+                con.Close();
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
         }
     }
 
-    private void insertItemDetails()
+    private void insertItemDetails(string billReferenceNo)
     {
         DataTable itemsDT = (DataTable)Session["BillDetails"];
 
         // bill header ref no
-        string billRefno = txtRefNo.Text.ToString();
+        string billRefno = billReferenceNo;
 
         // individual item ref no
         string itemRefNo = GetItemRefID().ToString();
@@ -973,38 +956,47 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
             {
                 int rowIndex = row.RowIndex;
 
-                // Item, UOM, Price, Qty, Amount
-                string item = itemsDT.Rows[rowIndex]["Item"].ToString();
-                string uom = itemsDT.Rows[rowIndex]["UOM"].ToString();
-                double price = Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
-                double qty = Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
-                double amount = Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
-                //RefIDItem
+                // to skip the last custom totla bill row
+                if (rowIndex < (itemGrid.Rows.Count - 1))
+                {
+                    // Item, UOM, Price, Qty, Amount
+                    string item = itemsDT.Rows[rowIndex]["Item"].ToString();
+                    string uom = itemsDT.Rows[rowIndex]["UOM"].ToString();
 
-                // inserting bill item details
-                string sql = $@"INSERT INTO Bills2751
+                    double price = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Price"]) ? 0 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
+                    double qty = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Qty"]) ? 0 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
+                    double amount = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Amount"]) ? 0 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
+
+
+                    //double price = Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
+                    //double qty = Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
+                    //double amount = Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
+
+                    // inserting bill item details
+                    string sql = $@"INSERT INTO Bills2751
                                 (RefNo, RefIDItem, Item, UOM, Price, Qty, Amount) 
                                 VALUES 
                                 (@RefNo, @RefIDItem, @Item, @UOM, @Price, @Qty, @Amount)";
 
-                SqlCommand cmd = new SqlCommand(sql, con);
-                cmd.Parameters.AddWithValue("@RefNo", billRefno);
-                cmd.Parameters.AddWithValue("@RefIDItem", itemRefNo);
-                cmd.Parameters.AddWithValue("@Item", item);
-                cmd.Parameters.AddWithValue("@UOM", uom);
-                cmd.Parameters.AddWithValue("@Price", price);
-                cmd.Parameters.AddWithValue("@Qty", qty);
-                cmd.Parameters.AddWithValue("@Amount", amount);
-                cmd.ExecuteNonQuery();
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    cmd.Parameters.AddWithValue("@RefNo", billRefno);
+                    cmd.Parameters.AddWithValue("@RefIDItem", itemRefNo);
+                    cmd.Parameters.AddWithValue("@Item", item);
+                    cmd.Parameters.AddWithValue("@UOM", uom);
+                    cmd.Parameters.AddWithValue("@Price", price);
+                    cmd.Parameters.AddWithValue("@Qty", qty);
+                    cmd.Parameters.AddWithValue("@Amount", amount);
+                    cmd.ExecuteNonQuery();
+                }
             }
 
             con.Close();
         }
     }
 
-    private void insertBillTaxHeads()
+    private void insertBillTaxHeads(string billReferenceNo)
     {
-        string BillRefno = txtRefNo.Text.ToString();
+        string BillRefno = billReferenceNo;
 
         // Account Head DataTable
         DataTable dt = (DataTable)Session["AccountHeadDT"];
@@ -1082,9 +1074,9 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         }
     }
 
-    private void insertBilldocument()
+    private void insertBilldocument(string billReferenceNo)
     {
-        string refno = txtRefNo.Text.ToString();
+        string refno = billReferenceNo;
 
         DataTable documentsDT = (DataTable)Session["DocUploadDT"];
 
@@ -1203,6 +1195,71 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
             object result = cmd.ExecuteScalar();
             if (result != null && result != DBNull.Value) { nextRefID = result.ToString(); }
             return Convert.ToInt32(nextRefID);
+        }
+    }
+
+
+    //========================{ WorkFlow Bill Entry }==================================
+
+    private bool InsertWorkFlowBillEntery(string billReferenceNo)
+    {
+        // getting next desk from WorkFlow2 table
+        DataTable workFlow2DT = GetNextDeskWorlFlow();
+
+        if (workFlow2DT.Rows.Count > 0)
+        {
+            // next desk code
+            string desk2 = workFlow2DT.Rows[0]["w2Desk1"].ToString();
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string sql = $@"INSERT INTO WorkFlow751 
+                                (DocType, DocNo, Status, Reason, Desk1, Desk2, Remarks) 
+                                VALUES 
+                                (@DocType, @DocNo, @Status, @Reason, @Desk1, @Desk2, @Remarks)";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@DocType", "Bills1");
+                cmd.Parameters.AddWithValue("@DocNo", billReferenceNo);
+                cmd.Parameters.AddWithValue("@Status", "New");
+                cmd.Parameters.AddWithValue("@Reason", "For Review");
+                cmd.Parameters.AddWithValue("@Desk1", "Tech"); // temporary without session
+                cmd.Parameters.AddWithValue("@Desk2", desk2);
+                cmd.Parameters.AddWithValue("@Remarks", "System Genereted");
+                //cmd.ExecuteNonQuery();
+
+                SqlDataAdapter ad = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                ad.Fill(dt);
+
+                con.Close();
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private DataTable GetNextDeskWorlFlow()
+    {
+        using (SqlConnection con = new SqlConnection(connectionString))
+        {
+            con.Open();
+            string sql = $@"SELECT * FROM WorkFlow2751 WHERE w2Name = 'WFBills1' ORDER BY w2Order ASC";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            //cmd.Parameters.AddWithValue("@BillAmt", totalBillAmount);
+            //cmd.ExecuteNonQuery();
+
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            ad.Fill(dt);
+
+            con.Close();
+
+            return dt;
         }
     }
 }

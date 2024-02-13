@@ -6,54 +6,30 @@
 <head runat="server">
     <title>Bill Entry</title>
 
-    <%--<!--Bootstrap CSS-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-    <!--jQuery-->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+J2Wk5vqXn3Fm/z2N1r8f6VZJ4T3Hdvh4kXG1j4fZ6IsU2f5" crossorigin="anonymous"></script>
-
-    <!--AJAX JS-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!--Bootstrap JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-    <!--Using JavaScript library such as Select2-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>--%>
-
-    <!-- SweetAlert2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.3/dist/sweetalert2.min.css" rel="stylesheet" />
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.3/dist/sweetalert2.all.min.js"></script>
-
-
-
-    <!-- CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../css/bootstrap1.min.css" rel="stylesheet" />
-    <link href="../css/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="../css/eye-fill.svg" rel="stylesheet" />
-
-    <!-- Popper.js -->
-    <script src="../js/popper.min.js"></script>
-    <script src="../js/popper1.min.js"></script>
-
-    <!-- jQuery -->
-    <script src="../js/jquery-3.6.0.min.js"></script>
-    <script src="../js/jquery.min.js"></script>
-    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <!-- Boottrap CSS -->
+    <link href="../assests/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assests/css/bootstrap1.min.css" rel="stylesheet" />
 
     <!-- Bootstrap JS -->
-    <script src="../js/bootstrap.bundle.min.js"></script>
-    <script src="../js/bootstrap1.min.js"></script>
+    <script src="../assests/js/bootstrap.bundle.min.js"></script>
+    <script src="../assests/js/bootstrap1.min.js"></script>
+
+    <!-- Popper.js -->
+    <script src="../assests/js/popper.min.js"></script>
+    <script src="../assests/js/popper1.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="../assests/js/jquery-3.6.0.min.js"></script>
+    <script src="../assests/js/jquery.min.js"></script>
+    <script src="../assests/js/jquery-3.3.1.slim.min.js"></script>
 
     <!-- Select2 library CSS and JS -->
-    <link href="../select2/select2.min.css" rel="stylesheet" />
-    <script src="../select2/select2.min.js"></script>
+    <link href="../assests/select2/select2.min.css" rel="stylesheet" />
+    <script src="../assests/select2/select2.min.js"></script>
 
-
-
-
-
+    <!-- Sweet Alert CSS and JS -->
+    <link href="../assests/sweertalert/sweetalert2.min.css" rel="stylesheet" />
+    <script src="../assests/sweertalert/sweetalert2.all.min.js"></script>
 
     <script src="bill-entry.js"></script>
     <link rel="stylesheet" href="bill-entry.css" />
@@ -64,16 +40,19 @@
         <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true"></asp:ScriptManager>
 
         <!-- Heading -->
-        <div class="col-md-11 mx-auto mt-1">
-            <div class="fw-normal fs-5 fw-medium text-body-secondary">
-                <asp:Literal Text="Bill Entry" runat="server"></asp:Literal>
-            </div>
+        <div class="col-md-11 mx-auto fw-normal fs-3 fw-medium ps-0 pb-2 text-body-secondary mb-3">
+            <asp:Literal Text="Bill Entry" runat="server"></asp:Literal>
         </div>
 
 
         <!-- UI -->
-        <div class="card col-md-11 mx-auto mt-2 py-2 shadow-sm rounded-3">
+        <div class="card col-md-11 mx-auto mt-1 py-2 shadow-sm rounded-3">
             <div class="card-body">
+
+                <!-- Heading -->
+                <div class="fw-normal fs-5 fw-medium pb-2 text-body-secondary mb-3">
+                    <asp:Literal Text="Bill Details" runat="server"></asp:Literal>
+                </div>
 
                 <!-- Bill details -->
 
@@ -160,16 +139,13 @@
                     </div>
                 </div>
 
-                <!-- 5th row -->
+                <%-- <!-- 5th row -->
                 <div class="align-self-end">
                     <div class="mb-1 text-body-tertiary fw-semibold fs-6">
                         <asp:Literal ID="Literal6" Text="" runat="server">Reference No</asp:Literal>
                     </div>
                     <asp:TextBox runat="server" ID="txtRefNo" type="text" Enabled="false" CssClass="form-control border border-secondary-subtle bg-light rounded-1 fs-6 fw-light py-1"></asp:TextBox>
-                </div>
-
-
-
+                </div>--%>
             </div>
         </div>
 
@@ -188,7 +164,7 @@
 
                 <!-- Item Insert -->
                 <div class="card border-0 mt-3 rounded-3">
-                    <div class="card-body">
+                    <div class="">
 
 
                         <div class="row mb-2">
@@ -230,14 +206,14 @@
                             </div>
                             <div class="col-md-2 align-self-end text-end">
                                 <div class="pb-0 mb-0">
-                                    <asp:Button ID="btnItemInsert" runat="server" Text="Insert" OnClick="btnItemInsert_Click" ValidationGroup="ItemSave" CssClass="btn btn-success text-white shadow mb-5 col-md-7 button-position" />
+                                    <asp:Button ID="btnItemInsert" runat="server" Text="Add +" OnClick="btnItemInsert_Click" ValidationGroup="ItemSave" CssClass="btn btn-success text-white shadow mb-5 col-md-7 button-position" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- Item GridView -->
                         <div id="itemDiv" runat="server" visible="false" class="mt-3">
-                            <asp:GridView ShowHeaderWhenEmpty="true" ID="itemGrid" runat="server" AutoGenerateColumns="false"
+                            <asp:GridView ShowHeaderWhenEmpty="true" ID="itemGrid" runat="server" AutoGenerateColumns="false" OnRowDeleting="Grid_RowDeleting"
                                 CssClass="table table-bordered  border border-1 border-dark-subtle text-center grid-custom mb-3">
                                 <HeaderStyle CssClass="align-middle" />
                                 <Columns>
@@ -256,36 +232,50 @@
                                     <asp:BoundField DataField="Price" HeaderText="Price" ItemStyle-Font-Size="15px" ItemStyle-CssClass="align-middle text-start fw-light" />
                                     <asp:BoundField DataField="Qty" HeaderText="Qty" ItemStyle-Font-Size="15px" ItemStyle-CssClass="align-middle text-start fw-light" />
                                     <asp:BoundField DataField="Amount" HeaderText="Amount" ItemStyle-Font-Size="15px" ItemStyle-CssClass="align-middle text-start fw-light" />
+
+                                    <asp:TemplateField HeaderText="Actions">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="lnkDelete" runat="server" CommandName="Delete" CommandArgument='<%# Container.DataItemIndex %>'>
+                                                <asp:Image runat="server" ImageUrl="~/portal/assests/img/modern-cross-fill.svg" AlternateText="Edit" style="width: 28px; height: 28px;"/>
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                        <ItemStyle HorizontalAlign="Center" Width="100px" />
+                                    </asp:TemplateField>
+
+
                                 </Columns>
                             </asp:GridView>
 
                             <hr class="border border-secondary-subtle" />
 
-                            <!-- Total Bill -->
-                            <div class="row mb-3">
-                                <div class="col-md-9 align-self-end"></div>
-                                <div class="col-md-3 align-self-end">
-                                    <asp:Literal ID="Literal13" Text="" runat="server">Total Bill Amount</asp:Literal>
-                                    <div class="input-group">
-                                        <span class="input-group-text fs-5 fw-semibold">₹</span>
-                                        <asp:TextBox runat="server" ID="txtBillAmount" CssClass="form-control fw-lighter border border-2" ReadOnly="true" placeholder="Total Bill Amount"></asp:TextBox>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Total Bill & Tax Visibility Dropdown -->
+                            <div class="row px-0 mb-3">
 
-                            <!-- DD Apply Tax Or Not -->
-                            <div class="row mb-3">
-                                <div class="col-md-8"></div>
-                                <div class="col-md-4">
+                                <!-- DD Apply Tax Or Not -->
+                                <div class="col-md-3">
                                     <asp:DropDownList ID="ddTaxOrNot" runat="server" OnSelectedIndexChanged="ddTaxOrNot_SelectedIndexChanged" AutoPostBack="true" CssClass="col-md-12 text-center fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2">
                                         <asp:ListItem Text="No Tax Head" Value="NoTax"></asp:ListItem>
                                         <asp:ListItem Text="Apply Tax Head" Value="Tax"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
+
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3"></div>
+
+                                <!-- Total Bill -->
+                                <div class="col-md-3 align-self-end text-end">
+                                    <asp:Literal ID="Literal6" Text="" runat="server">Total Bill Amount</asp:Literal>
+                                    <div class="input-group">
+                                        <span class="input-group-text fs-5 fw-semibold">₹</span>
+                                        <asp:TextBox runat="server" ID="txtBillAmount" CssClass="form-control fw-lighter border border-2" ReadOnly="true" placeholder="Total Bill Amount"></asp:TextBox>
+                                    </div>
+                                </div>
+
                             </div>
 
+                            <!-- Tax Grid Starts -->
                             <div id="divTaxHead" runat="server" visible="false">
-                                <!-- Tax Grid -->
+
                                 <asp:GridView ShowHeaderWhenEmpty="true" ID="GridTax" runat="server" AutoGenerateColumns="false" OnRowDataBound="GridTax_RowDataBound" CssClass="table text-center">
                                     <HeaderStyle CssClass="align-middle table-secondary fw-light" />
                                     <Columns>
@@ -339,45 +329,39 @@
 
 
                                 <!-- Net Deduction, Addition & Total Bill Amounts -->
-                                <div class="mb-2">
-                                    <div class="row mb-3">
-                                        <div class="col-md-9 align-self-end">
-                                            <!--  -->
-                                        </div>
-                                        <div class="col-md-3 align-self-end">
-                                            <asp:Literal ID="Literal14" Text="Total Deductions :" runat="server"></asp:Literal>
-                                            <div class="input-group text-end">
-                                                <span class="input-group-text fs-5 fw-light">₹</span>
-                                                <asp:TextBox runat="server" ID="txtTotalDeduct" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
-                                            </div>
+                                <div class="row mb-3">
+                                    <!-- Total Deduction -->
+                                    <div class="col-md-3 align-self-end">
+                                        <asp:Literal ID="Literal14" Text="Total Deductions :" runat="server"></asp:Literal>
+                                        <div class="input-group text-end">
+                                            <span class="input-group-text fs-5 fw-light">₹</span>
+                                            <asp:TextBox runat="server" ID="txtTotalDeduct" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-9 align-self-end">
-                                            <!--  -->
-                                        </div>
-                                        <div class="col-md-3 align-self-end">
-                                            <asp:Literal ID="Literal15" Text="Total Additions :" runat="server"></asp:Literal>
-                                            <div class="input-group text-end">
-                                                <span class="input-group-text fs-5 fw-light">₹</span>
-                                                <asp:TextBox runat="server" ID="txtTotalAdd" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
-                                            </div>
+
+                                    <!-- Total Addition -->
+                                    <div class="col-md-3 align-self-end">
+                                        <asp:Literal ID="Literal15" Text="Total Additions :" runat="server"></asp:Literal>
+                                        <div class="input-group text-end">
+                                            <span class="input-group-text fs-5 fw-light">₹</span>
+                                            <asp:TextBox runat="server" ID="txtTotalAdd" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-9 align-self-end">
-                                            <!--  -->
-                                        </div>
-                                        <div class="col-md-3 align-self-end">
-                                            <asp:Literal ID="Literal16" Text="Net Amount :" runat="server"></asp:Literal>
-                                            <div class="input-group text-end">
-                                                <span class="input-group-text fs-5 fw-light">₹</span>
-                                                <asp:TextBox runat="server" ID="txtNetAmnt" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
-                                            </div>
+
+                                    <div class="col-md-3"></div>
+
+                                    <!-- Net Amount -->
+                                    <div class="col-md-3 align-self-end text-end">
+                                        <asp:Literal ID="Literal16" Text="Net Amount :" runat="server"></asp:Literal>
+                                        <div class="input-group text-end">
+                                            <span class="input-group-text fs-5 fw-light">₹</span>
+                                            <asp:TextBox runat="server" ID="txtNetAmnt" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+                            <!-- Tax Grid Ends -->
 
 
                         </div>
@@ -397,7 +381,7 @@
                         <div class="col-md-6">
                             <div class="mt-4 input-group has-validation">
                                 <asp:FileUpload ID="fileDoc" runat="server" CssClass="form-control" aria-describedby="inputGroupPrepend" />
-                                <asp:Button ID="btnDocUpload" OnClick="btnDocUpload_Click" runat="server" Text="Upload" AutoPost="true" CssClass="btn btn-custom btn-outline-secondary" />
+                                <asp:Button ID="btnDocUpload" OnClick="btnDocUpload_Click" runat="server" Text="Upload +" AutoPost="true" CssClass="btn btn-custom btn-outline-secondary" />
                             </div>
                             <h6 class="pt-3 fw-lighter fs-6 text-secondary-subtle">User can upload multiple documents using upload button !</h6>
                         </div>
@@ -407,7 +391,7 @@
 
                     <!-- Document Grid -->
                     <div id="docGrid" class="mt-5" runat="server" visible="false">
-                        <asp:GridView ShowHeaderWhenEmpty="true" ID="GridDocument" EnableViewState="true" runat="server" AutoGenerateColumns="false"
+                        <asp:GridView ShowHeaderWhenEmpty="true" ID="GridDocument" EnableViewState="true" runat="server" AutoGenerateColumns="false" OnRowDeleting="Grid_RowDeleting"
                             CssClass="table table-bordered border border-light-subtle text-start mt-3 grid-custom">
                             <HeaderStyle CssClass="align-middle fw-light fs-6" />
                             <Columns>
@@ -426,6 +410,15 @@
                                     <ItemTemplate>
                                         <asp:HyperLink ID="DocPath" runat="server" Text="View Uploaded Document" NavigateUrl='<%# Eval("DocPath") %>' Target="_blank" CssClass="text-decoration-none"></asp:HyperLink>
                                     </ItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Actions">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="lnkDelete" runat="server" CommandName="Delete" CommandArgument='<%# Container.DataItemIndex %>' CssClass="align-middle">
+                                            <asp:Image runat="server" ImageUrl="~/portal/assests/img/modern-cross-fill.svg" AlternateText="Edit" style="width: 28px; height: 28px;"/>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                    <ItemStyle HorizontalAlign="Center" Width="100px" />
                                 </asp:TemplateField>
 
                             </Columns>

@@ -6,48 +6,30 @@
 <head runat="server">
     <title>Bill Update</title>
 
-    <%--<!-- Boottrap CSS -->
-    <link href="~/portal/assests/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/portal/assests/css/bootstrap1.min.css" rel="stylesheet" />
-
-    <!-- Bootstrap JS -->
-    <script src="~/portal/assests/js/bootstrap.bundle.min.js"></script>
-    <script src="~/portal/assests/js/bootstrap1.min.js"></script>
-
-    <!-- Popper.js -->
-    <script src="~/portal/assests/js/popper.min.js"></script>
-    <script src="~/portal/assests/js/popper1.min.js"></script>
-
-    <!-- jQuery -->
-    <script src="~/portal/assests/js/jquery-3.6.0.min.js"></script>
-    <script src="~/portal/assests/js/jquery.min.js"></script>
-    <script src="~/portal/assests/js/jquery-3.3.1.slim.min.js"></script>
-
-    <!-- Select2 library CSS and JS -->
-    <link href="~/portal/assests/select2/select2.min.css" rel="stylesheet" />
-    <script src="~/portal/assests/select2/select2.min.js"></script>--%>
-
-
     <!-- Boottrap CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/portal/assests/css/bootstrap1.min.css" rel="stylesheet" />
+    <link href="../../assests/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../assests/css/bootstrap1.min.css" rel="stylesheet" />
 
     <!-- Bootstrap JS -->
-    <script src="../js/bootstrap.bundle.min.js"></script>
-    <script src="../js/bootstrap1.min.js"></script>
+    <script src="../../assests/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assests/js/bootstrap1.min.js"></script>
 
     <!-- Popper.js -->
-    <script src="../js/popper.min.js"></script>
-    <script src="../js/popper1.min.js"></script>
+    <script src="../../assests/js/popper.min.js"></script>
+    <script src="../../assests/js/popper1.min.js"></script>
 
     <!-- jQuery -->
-    <script src="../js/jquery-3.6.0.min.js"></script>
-    <script src="../js/jquery.min.js"></script>
-    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../../assests/js/jquery-3.6.0.min.js"></script>
+    <script src="../../assests/js/jquery.min.js"></script>
+    <script src="../../assests/js/jquery-3.3.1.slim.min.js"></script>
 
     <!-- Select2 library CSS and JS -->
-    <link href="../select2/select2.min.css" rel="stylesheet" />
-    <script src="../select2/select2.min.js"></script>
+    <link href="../../assests/select2/select2.min.css" rel="stylesheet" />
+    <script src="../../assests/select2/select2.min.js"></script>
+
+    <!-- Sweet Alert CSS and JS -->
+    <link href="../../assests/sweertalert/sweetalert2.min.css" rel="stylesheet" />
+    <script src="../../assests/sweertalert/sweetalert2.all.min.js"></script>
 
 
     <script src="bill-update.js"></script>
@@ -60,7 +42,6 @@
         <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true"></asp:ScriptManager>
 
         <div id="divTopSearch" runat="server" visible="true">
-
             <div class="col-md-11 mx-auto">
 
                 <!-- Bill Control -->
@@ -212,13 +193,8 @@
         <div id="UpdateDiv" runat="server" visible="false">
 
             <!-- Heading -->
-            <div class="row col-md-11 mx-auto px-0">
-                <div class="col-md-5 mt-1 mb-4 border border-secondary-subtle rounded-1 bg-light shadow-sm">
-                    <div class="fw-normal fs-5 fw-medium text-dark ps-1 py-2">
-                        <asp:Literal Text="Bill Entry Update" runat="server"></asp:Literal>
-                    </div>
-                </div>
-                <div class="col-md-8"></div>
+            <div class="col-md-11 mx-auto fw-normal fs-3 fw-medium ps-0 pb-2 text-body-secondary mb-3">
+                <asp:Literal Text="Bill Details Update" runat="server"></asp:Literal>
             </div>
 
 
@@ -397,27 +373,29 @@
 
                         <hr class="border border-secondary-subtle" />
 
-                        <!-- Total Bill -->
-                        <div class="row mb-3">
-                            <div class="col-md-9 align-self-end"></div>
-                            <div class="col-md-3 align-self-end">
+                        <!-- Total Bill & Tax Visibility Dropdown -->
+                        <div class="row px-0 mb-3">
+
+                            <!-- DD Apply Tax Or Not -->
+                            <div class="col-md-3">
+                                <asp:DropDownList ID="ddTaxOrNot" runat="server" OnSelectedIndexChanged="ddTaxOrNot_SelectedIndexChanged" AutoPostBack="true" CssClass="col-md-12 text-center fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2">
+                                    <asp:ListItem Text="No Tax Head" Value="NoTax"></asp:ListItem>
+                                    <asp:ListItem Text="Apply Tax Head" Value="Tax"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"></div>
+
+                            <!-- Total Bill -->
+                            <div class="col-md-3 align-self-end text-end">
                                 <asp:Literal ID="Literal17" Text="" runat="server">Total Bill Amount</asp:Literal>
                                 <div class="input-group">
                                     <span class="input-group-text fs-5 fw-semibold">₹</span>
                                     <asp:TextBox runat="server" ID="txtBillAmount" CssClass="form-control fw-lighter border border-2" ReadOnly="true" placeholder="Total Bill Amount"></asp:TextBox>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- DD Apply Tax Or Not -->
-                        <div class="row mb-3">
-                            <div class="col-md-8"></div>
-                            <div class="col-md-4">
-                                <asp:DropDownList ID="ddTaxOrNot" runat="server" OnSelectedIndexChanged="ddTaxOrNot_SelectedIndexChanged" AutoPostBack="true" CssClass="col-md-12 text-center fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2">
-                                    <asp:ListItem Text="No Tax Head" Value="NoTax"></asp:ListItem>
-                                    <asp:ListItem Text="Apply Tax Head" Value="Tax"></asp:ListItem>
-                                </asp:DropDownList>
-                            </div>
                         </div>
 
                         <div id="divTaxHead" runat="server" visible="false">
@@ -475,44 +453,37 @@
 
 
                             <!-- Net Deduction, Addition & Total Bill Amounts -->
-                            <div class="mb-2">
-                                <div class="row mb-3">
-                                    <div class="col-md-9 align-self-end">
-                                        <!--  -->
-                                    </div>
-                                    <div class="col-md-3 align-self-end">
-                                        <asp:Literal ID="Literal18" Text="Total Deductions :" runat="server"></asp:Literal>
-                                        <div class="input-group text-end">
-                                            <span class="input-group-text fs-5 fw-light">₹</span>
-                                            <asp:TextBox runat="server" ID="txtTotalDeduct" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
-                                        </div>
+                            <div class="row mb-3">
+                                <!-- Total Deduction -->
+                                <div class="col-md-3 align-self-end">
+                                    <asp:Literal ID="Literal18" Text="Total Deductions :" runat="server"></asp:Literal>
+                                    <div class="input-group text-end">
+                                        <span class="input-group-text fs-5 fw-light">₹</span>
+                                        <asp:TextBox runat="server" ID="txtTotalDeduct" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-9 align-self-end">
-                                        <!--  -->
-                                    </div>
-                                    <div class="col-md-3 align-self-end">
-                                        <asp:Literal ID="Literal19" Text="Total Additions :" runat="server"></asp:Literal>
-                                        <div class="input-group text-end">
-                                            <span class="input-group-text fs-5 fw-light">₹</span>
-                                            <asp:TextBox runat="server" ID="txtTotalAdd" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
-                                        </div>
+
+                                <!-- Total Addition -->
+                                <div class="col-md-3 align-self-end">
+                                    <asp:Literal ID="Literal19" Text="Total Additions :" runat="server"></asp:Literal>
+                                    <div class="input-group text-end">
+                                        <span class="input-group-text fs-5 fw-light">₹</span>
+                                        <asp:TextBox runat="server" ID="txtTotalAdd" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-9 align-self-end">
-                                        <!--  -->
-                                    </div>
-                                    <div class="col-md-3 align-self-end">
-                                        <asp:Literal ID="Literal20" Text="Net Amount :" runat="server"></asp:Literal>
-                                        <div class="input-group text-end">
-                                            <span class="input-group-text fs-5 fw-light">₹</span>
-                                            <asp:TextBox runat="server" ID="txtNetAmnt" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
-                                        </div>
+
+                                <div class="col-md-3"></div>
+
+                                <!-- Net Amount -->
+                                <div class="col-md-3 align-self-end text-end">
+                                    <asp:Literal ID="Literal20" Text="Net Amount :" runat="server"></asp:Literal>
+                                    <div class="input-group text-end">
+                                        <span class="input-group-text fs-5 fw-light">₹</span>
+                                        <asp:TextBox runat="server" ID="txtNetAmnt" CssClass="form-control fw-lighter border border-2" ReadOnly="true"></asp:TextBox>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
 

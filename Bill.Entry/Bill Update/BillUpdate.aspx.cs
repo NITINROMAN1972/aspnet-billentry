@@ -767,32 +767,45 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         double qty = Convert.ToDouble(txtQty.Text.ToString());
         double amount = (price * qty);
 
-        DataTable dt = ViewState["BillDetailsVS"] as DataTable ?? createBillDatatable();
-
-        AddRowToBillDetailsDataTable(dt, refNo, item, uom, price, qty, amount);
-
-        ViewState["BillDetailsVS"] = dt;
-        Session["BillDetails"] = dt;
-
-        if (dt.Rows.Count > 0)
+        if (price >= 0.00 && qty >= 0)
         {
-            itemDiv.Visible = true;
+            DataTable dt = ViewState["BillDetailsVS"] as DataTable ?? createBillDatatable();
 
-            itemGrid.DataSource = dt;
-            itemGrid.DataBind();
+            AddRowToBillDetailsDataTable(dt, refNo, item, uom, price, qty, amount);
 
-            double totalBillAmount = 0.00;
-
-            if (Session["TotalBillAmount"].ToString() != "")
+            if (dt.Rows.Count > 0)
             {
-                totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
+                itemDiv.Visible = true;
+
+                itemGrid.DataSource = dt;
+                itemGrid.DataBind();
+
+                ViewState["BillDetailsVS"] = dt;
+                Session["BillDetails"] = dt;
+
+                // Identify the index of the "TOTAL BILL" row
+                int lastRowIndex = dt.Rows.Count - 1;
+
+                double totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
+
+                totalBillAmount = totalBillAmount + amount;
+                Session["TotalBillAmount"] = totalBillAmount;
+
+                txtBillAmount.Text = totalBillAmount.ToString("N2");
+
             }
-
-            totalBillAmount = totalBillAmount + amount;
-            Session["TotalBillAmount"] = totalBillAmount;
-
-            txtBillAmount.Text = totalBillAmount.ToString("N2");
         }
+        else
+        {
+            string title = "Negative Values";
+            string message = "please add positive values";
+            getSweetAlertErrorMandatory(title, message);
+        }
+    }
+
+    private double? ConvertToNullableDouble(object value)
+    {
+        return value == DBNull.Value ? (double?)null : Convert.ToDouble(value);
     }
 
     private DataTable createBillDatatable()

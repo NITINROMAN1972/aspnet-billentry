@@ -167,7 +167,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "select * from Bills1751";
+            string sql = "select * from Bills1751 order by RefNo desc";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.ExecuteNonQuery();
 
@@ -222,7 +222,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
             ddScUnit.DataSource = dt;
             ddScUnit.DataTextField = "unitName";
-            ddScUnit.DataValueField = "RefId";
+            ddScUnit.DataValueField = "unitCode";
             ddScUnit.DataBind();
             ddScUnit.Items.Insert(0, new ListItem("------Select Unit / Office------", "0"));
         }
@@ -246,11 +246,11 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             ddScImpstCardNo.DataTextField = "icNumber";
             ddScImpstCardNo.DataValueField = "RefID";
             ddScImpstCardNo.DataBind();
-            ddScImpstCardNo.Items.Insert(0, new ListItem("------Select Imprest Card No.------", "0"));
+            ddScImpstCardNo.Items.Insert(0, new ListItem("------Select Imprest Card No------", "0"));
         }
     }
 
-
+    // event not needed here
     protected void Search_BillNo_DD_Event(object sender, EventArgs e)
     {
         string billNo = ddScBillNo.SelectedValue;
@@ -259,12 +259,10 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
     {
         string vendor = ddScVendor.SelectedValue;
     }
-
     protected void Search_Unit_DD_Event(object sender, EventArgs e)
     {
         string unitOffice = ddScUnit.SelectedValue;
     }
-
     protected void Search_ImprestCardNo_DD_Event(object sender, EventArgs e)
     {
         string imprestCardNo = ddScImpstCardNo.SelectedValue;
@@ -322,14 +320,14 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         }
     }
 
-    private DataTable GetUnitDT(string unitRefID)
+    private DataTable GetUnitDT(string unitCode)
     {
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "select * from Units751 where RefId = @RefID";
+            string sql = "select * from Units751 where unitCode = @unitCode";
             SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@RefID", unitRefID);
+            cmd.Parameters.AddWithValue("@unitCode", unitCode);
             cmd.ExecuteNonQuery();
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -422,7 +420,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         string unitRefID = ddScUnit.SelectedValue;
         string imprestCardRefID = ddScImpstCardNo.SelectedValue;
 
-
         // date - from & to date
         //DateTime fromDate = DateTime.Parse(ScFromDate.Text);
         //DateTime toDate = DateTime.Parse(ScToDate.Text);
@@ -445,7 +442,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         string billNumber = (billDT.Rows.Count > 0) ? billDT.Rows[0]["VouNo"].ToString() : string.Empty;
 
         string vendorName = (vendorDT.Rows.Count > 0) ? vendorDT.Rows[0]["vName"].ToString() : string.Empty;
-        string unitName = (unitDT.Rows.Count > 0) ? unitDT.Rows[0]["unitName"].ToString() : string.Empty;
+        string unitName = (unitDT.Rows.Count > 0) ? unitDT.Rows[0]["unitCode"].ToString() : string.Empty;
         string imprestCardNo = (imprestCardDT.Rows.Count > 0) ? imprestCardDT.Rows[0]["icNumber"].ToString() : string.Empty;
 
         DataTable searchResultDT = SearchRecords(billNumber, fromDate, toDate, vendorName, unitName, imprestCardNo);
@@ -453,6 +450,10 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         // binding the search grid
         gridSearch.DataSource = searchResultDT;
         gridSearch.DataBind();
+
+        //Required for jQuery DataTables to work.
+        gridSearch.UseAccessibleHeader = true;
+        gridSearch.HeaderRow.TableSection = TableRowSection.TableHeader;
 
         Session["PaginationDataSource"] = searchResultDT;
     }
@@ -463,7 +464,10 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         {
             connection.Open();
 
-            string sql = "SELECT * FROM Bills1751 WHERE 1=1";
+            string sql = $@"SELECT bill.*, unit.unitName 
+                            FROM Bills1751 as bill inner join Units751 as unit
+                            on bill.Unit = unit.unitCode 
+                            WHERE 1=1";
 
             if (!string.IsNullOrEmpty(billNumber))
             {
@@ -620,10 +624,12 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = $@"select bill.* , imp.icFirstName
-                            from Bills1751 bill inner join ImprestCard751 imp 
-                            on bill.CardNo = imp.icNumber
-                            where RefNo = @RefNo";
+            string sql = $@"Select bill.* , imp.icFirstName, unit.unitName 
+                            From Bills1751 bill 
+                            Inner Join ImprestCard751 imp ON bill.CardNo = imp.icNumber 
+                            Inner Join Units751 unit ON bill.Unit = unit.unitCode 
+                            Where RefNo = @RefNo";
+
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@RefNo", billRefNo);
             cmd.ExecuteNonQuery();
@@ -632,6 +638,8 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             DataTable dt = new DataTable();
             ad.Fill(dt);
             con.Close();
+
+            Session["HeaderDataTable"] = dt;
 
 
             txtRefNo.Text = dt.Rows[0]["RefNo"].ToString();
@@ -658,7 +666,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
 
             ddUnitOffice.DataSource = dt;
-            ddUnitOffice.DataTextField = "Unit";
+            ddUnitOffice.DataTextField = "unitName";
             ddUnitOffice.DataValueField = "Unit";
             ddUnitOffice.DataBind();
             ddUnitOffice.Items.Insert(0, new ListItem("------Select Unit------", "0"));
@@ -714,6 +722,10 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             itemGrid.DataSource = dt;
             itemGrid.DataBind();
 
+            //Required for jQuery DataTables to work.
+            itemGrid.UseAccessibleHeader = true;
+            itemGrid.HeaderRow.TableSection = TableRowSection.TableHeader;
+
             ViewState["BillDetailsVS"] = dt;
             Session["BillDetails"] = dt;
         }
@@ -743,6 +755,60 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             Session["DocUploadDT"] = dt;
         }
     }
+
+
+
+
+    //=========================={ GridView RowDeleting }==========================
+    protected void Grid_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        GridView gridView = (GridView)sender;
+
+        // item gridview
+        if (gridView.ID == "itemGrid")
+        {
+            int rowIndex = e.RowIndex;
+
+            DataTable dt = ViewState["BillDetailsVS"] as DataTable;
+
+            if (dt != null && dt.Rows.Count > rowIndex)
+            {
+                dt.Rows.RemoveAt(rowIndex);
+
+                ViewState["BillDetailsVS"] = dt;
+                Session["BillDetails"] = dt;
+
+                itemGrid.DataSource = dt;
+                itemGrid.DataBind();
+
+                // re-calculating total amount n assigning back to textbox
+                double? totalBillAmount = dt.AsEnumerable().Sum(row => row["Amount"] is DBNull ? (double?)null : Convert.ToDouble(row["Amount"])) ?? 0.0;
+                txtBillAmount.Text = totalBillAmount.HasValue ? totalBillAmount.Value.ToString("N2") : "0.00";
+            }
+        }
+
+        // document gridview
+        if (gridView.ID == "GridDocument")
+        {
+            int rowIndex = e.RowIndex;
+
+            DataTable dt = Session["DocUploadDT"] as DataTable;
+
+            if (dt != null && dt.Rows.Count > rowIndex)
+            {
+                dt.Rows.RemoveAt(rowIndex);
+
+                ViewState["DocDetailsDataTable"] = dt;
+                Session["DocUploadDT"] = dt;
+
+                GridDocument.DataSource = dt;
+                GridDocument.DataBind();
+            }
+        }
+    }
+
+
+
 
 
 
@@ -793,6 +859,11 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
                 txtBillAmount.Text = totalBillAmount.ToString("N2");
 
+                // clearing input fields
+                ddItem.SelectedIndex = 0;
+                ddUOM.SelectedIndex = 0;
+                txtPrice.Text = string.Empty;
+                txtQty.Text = string.Empty;
             }
         }
         else
@@ -856,19 +927,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         dt.Rows.Add(row);
     }
 
-    protected void ddTaxOrNot_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        string taxOrNot = ddTaxOrNot.SelectedValue;
-
-        if (ddTaxOrNot.SelectedValue == "Tax")
-        {
-            divTaxHead.Visible = true;
-        }
-        else
-        {
-            divTaxHead.Visible = false;
-        }
-    }
 
 
 
@@ -932,6 +990,20 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         }
     }
 
+    protected void ddTaxOrNot_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string taxOrNot = ddTaxOrNot.SelectedValue;
+
+        if (ddTaxOrNot.SelectedValue == "Yes")
+        {
+            divTaxHead.Visible = true;
+        }
+        else
+        {
+            divTaxHead.Visible = false;
+        }
+    }
+
     private void FillTaxHead()
     {
         string billRefno = txtRefNo.Text.ToString();
@@ -943,12 +1015,15 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         DataTable accountHeadExistingDT = getAccountHeadExisting(billRefno);
         DataTable accountHeadNewDT = getAccountHead();
 
-        if (accountHeadExistingDT.Rows.Count > 0)
+        // Header Datatable
+        DataTable headerDataTable = (DataTable)Session["HeaderDataTable"];
+
+        if (headerDataTable.Rows[0]["TaxApplied"].ToString() == "Yes")
         {
-            ddTaxOrNot.SelectedValue = "Tax";
+            ddTaxOrNot.SelectedValue = "Yes";
             divTaxHead.Visible = true;
 
-            // checking if the column exists inside the datatable, to remove them
+            // checking if the column exists inside the datatable, to remove them and copying data to new one
             if (accountHeadExistingDT.Columns.Contains("AccountHead"))
             {
                 DataColumn achg = new DataColumn("AcHGName", typeof(string));
@@ -966,8 +1041,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
                 accountHeadExistingDT.Columns.Remove("AccountHead");
                 accountHeadExistingDT.Columns.Remove("DeductHeadCode");
             }
-
-
 
             Session["AccountHeadDT"] = accountHeadExistingDT;
 
@@ -1241,7 +1314,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             // inserting bill tax heads
             string taxOrNot = ddTaxOrNot.SelectedValue;
 
-            if (taxOrNot == "Tax")
+            if (taxOrNot == "Yes")
             {
                 UpdateBillTaxHeads();
             }

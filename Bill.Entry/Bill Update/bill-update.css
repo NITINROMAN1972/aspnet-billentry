@@ -1,6 +1,10 @@
 ﻿body {
 }
 
+.gridview-pager{
+    text-decoration:none;
+}
+
 
 /* grid background color */
 .grid-custom th {

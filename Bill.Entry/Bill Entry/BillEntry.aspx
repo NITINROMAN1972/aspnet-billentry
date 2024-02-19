@@ -50,7 +50,7 @@
             <div class="card-body">
 
                 <!-- Heading -->
-                <div class="fw-normal fs-5 fw-medium pb-2 text-body-secondary mb-3">
+                <div class="fw-normal fs-5 fw-medium text-body-secondary border-bottom pb-2 mb-4">
                     <asp:Literal Text="Bill Details" runat="server"></asp:Literal>
                 </div>
 
@@ -139,10 +139,10 @@
                     </div>
                 </div>
 
-                <%-- <!-- 5th row -->
-                <div class="align-self-end">
+                 <!-- 5th row -->
+                <%--<div class="align-self-end" runat="server" visible="false">
                     <div class="mb-1 text-body-tertiary fw-semibold fs-6">
-                        <asp:Literal ID="Literal6" Text="" runat="server">Reference No</asp:Literal>
+                        <asp:Literal ID="Literal1111" Text="" runat="server">Reference No</asp:Literal>
                     </div>
                     <asp:TextBox runat="server" ID="txtRefNo" type="text" Enabled="false" CssClass="form-control border border-secondary-subtle bg-light rounded-1 fs-6 fw-light py-1"></asp:TextBox>
                 </div>--%>
@@ -254,8 +254,8 @@
                                 <!-- DD Apply Tax Or Not -->
                                 <div class="col-md-3">
                                     <asp:DropDownList ID="ddTaxOrNot" runat="server" OnSelectedIndexChanged="ddTaxOrNot_SelectedIndexChanged" AutoPostBack="true" CssClass="col-md-12 text-center fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2">
-                                        <asp:ListItem Text="No Tax Head" Value="NoTax"></asp:ListItem>
-                                        <asp:ListItem Text="Apply Tax Head" Value="Tax"></asp:ListItem>
+                                        <asp:ListItem Text="No Tax Head" Value="No"></asp:ListItem>
+                                        <asp:ListItem Text="Apply Tax Head" Value="Yes"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
 
@@ -280,7 +280,7 @@
                                     <HeaderStyle CssClass="align-middle table-secondary fw-light" />
                                     <Columns>
 
-                                        <asp:TemplateField HeaderText="Deduction Head" ItemStyle-Font-Size="15px" ItemStyle-CssClass="col-md-4 align-middle text-start fw-light">
+                                        <asp:TemplateField HeaderText="Account Head" ItemStyle-Font-Size="15px" ItemStyle-CssClass="col-md-4 align-middle text-start fw-light">
                                             <ItemTemplate>
                                                 <asp:TextBox ID="AcHName" runat="server" Enabled="false" CssClass="col-md-9 fw-light bg-white border-0 py-1 px-2" Text='<%# Bind("AcHName") %>'></asp:TextBox>
                                             </ItemTemplate>

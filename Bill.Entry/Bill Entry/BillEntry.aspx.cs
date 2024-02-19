@@ -211,7 +211,7 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
             con.Close();
 
             ddUnitOffice.DataSource = dt;
-            ddVendor.DataTextField = "unitName";
+            ddUnitOffice.DataTextField = "unitName";
             ddUnitOffice.DataValueField = "unitCode";
             ddUnitOffice.DataBind();
             ddUnitOffice.Items.Insert(0, new ListItem("------Select Unit / Office------", "0"));
@@ -374,6 +374,10 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
                 itemGrid.DataSource = dt;
                 itemGrid.DataBind();
+
+                // re-calculating total amount n assigning back to textbox
+                double? totalBillAmount = dt.AsEnumerable().Sum(row => row["Amount"] is DBNull ? (double?)null : Convert.ToDouble(row["Amount"])) ?? 0.0;
+                txtBillAmount.Text = totalBillAmount.HasValue ? totalBillAmount.Value.ToString("N2") : "0.00";
             }
         }
 
@@ -476,17 +480,35 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
                 itemGrid.DataSource = dt;
                 itemGrid.DataBind();
 
-                double totalBillAmount = 0.00;
 
-                if (Session["TotalBillAmount"].ToString() != "")
-                {
-                    totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
-                }
+                double? totalBillAmount = dt.AsEnumerable().Sum(row => row["Amount"] is DBNull ? (double?)null : Convert.ToDouble(row["Amount"])) ?? 0.0;
 
-                totalBillAmount = totalBillAmount + amount;
+
+
+
+
+
+
+
+                //double totalBillAmount = 0.00;
+
+                //if (Session["TotalBillAmount"].ToString() != "")
+                //{
+                //    totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
+                //}
+
+                //totalBillAmount = totalBillAmount + amount;
+
+
                 Session["TotalBillAmount"] = totalBillAmount;
 
-                txtBillAmount.Text = totalBillAmount.ToString("N2");
+                txtBillAmount.Text = totalBillAmount.HasValue ? totalBillAmount.Value.ToString("N2") : "0.00";
+
+                // clearing input fields
+                ddItem.SelectedIndex = 0;
+                ddUOM.SelectedIndex = 0;
+                txtPrice.Text = string.Empty;
+                txtQty.Text = string.Empty;
             }
         }
         else
@@ -544,7 +566,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         // Add the new row to the DataTable
         dt.Rows.Add(row);
     }
-    
 
 
 
@@ -554,7 +575,7 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
     {
         string taxOrNot = ddTaxOrNot.SelectedValue;
 
-        if (ddTaxOrNot.SelectedValue == "Tax")
+        if (ddTaxOrNot.SelectedValue == "Yes")
         {
             divTaxHead.Visible = true;
         }
@@ -842,52 +863,59 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        if (GridDocument.Rows.Count > 0)
+        if (itemGrid.Rows.Count > 0)
         {
-            string billReferenceNo = GetRefID().ToString();
-            Session["BillHeaderRefNo"] = billReferenceNo.ToString();
-
-            // inserting bill head
-            bool isBillHeaderInserted = insertBillHeader(billReferenceNo);
-
-            if (isBillHeaderInserted)
+            if (GridDocument.Rows.Count > 0)
             {
-                // inserting item details from grid
-                insertItemDetails(billReferenceNo);
+                string billReferenceNo = GetRefID().ToString();
+                Session["BillHeaderRefNo"] = billReferenceNo.ToString();
 
-                // inserting bill tax heads
-                string taxOrNot = ddTaxOrNot.SelectedValue;
+                // inserting bill head
+                bool isBillHeaderInserted = insertBillHeader(billReferenceNo);
 
-                if (taxOrNot == "Tax")
+                if (isBillHeaderInserted)
                 {
-                    insertBillTaxHeads(billReferenceNo);
-                }
+                    // inserting item details from grid
+                    insertItemDetails(billReferenceNo);
 
-                // inserting documents
-                insertBilldocument(billReferenceNo);
+                    // inserting bill tax heads
+                    string taxOrNot = ddTaxOrNot.SelectedValue;
 
-                //btnSubmit.Enabled = false;
-                //Response.Redirect("BillEntryUpdate/BillUpdate.aspx");
+                    if (taxOrNot == "Yes")
+                    {
+                        insertBillTaxHeads(billReferenceNo);
+                    }
 
-                bool workflow = InsertWorkFlowBillEntery(billReferenceNo);
+                    // inserting documents
+                    insertBilldocument(billReferenceNo);
 
-                if (workflow)
-                {
-                    getSweetAlertSuccessRedirectMandatory("Bill Inserted !", "the bill has been saved successfully", "BillEntryUpdate/BillUpdate.aspx");
+                    //btnSubmit.Enabled = false;
+                    //Response.Redirect("BillEntryUpdate/BillUpdate.aspx"); 
+
+                    bool workflow = InsertWorkFlowBillEntery(billReferenceNo);
+
+                    if (workflow)
+                    {
+                        getSweetAlertSuccessRedirectMandatory("Bill Inserted !", $"the bill with reference: {billReferenceNo} saved successfully", "BillEntryUpdate/BillUpdate.aspx");
+                    }
+                    else
+                    {
+                        getSweetAlertErrorMandatory("Work Flow Failed", "Please contact techical support");
+                    }
                 }
                 else
                 {
-                    getSweetAlertErrorMandatory("Work Flow Failed", "Please contact techical support");
+                    getSweetAlertErrorMandatory("Operation Failed", "Something went wrong, please try again");
                 }
             }
             else
             {
-                getSweetAlertErrorMandatory("Operation Failed", "Something went wrong, please try again");
+                getSweetAlertErrorMandatory("No Document Attached!", "Kindly upload minimum one billing document");
             }
         }
         else
         {
-            getSweetAlertErrorMandatory("No Document!", "Kindly upload minimum one billing document");
+            getSweetAlertErrorMandatory("No Item Added!", "Kindly add minimum 1 item to proceed");
         }
     }
 
@@ -906,11 +934,31 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
 
             double totalBillAmount = Convert.ToDouble(Session["TotalBillAmount"]);
 
+            string isTaxApplied = ddTaxOrNot.SelectedValue; // tax applied Yes or No
+
+            double totalDeduction = Convert.ToDouble(txtTotalDeduct.Text);
+            double totalAddition = Convert.ToDouble(txtTotalAdd.Text);
+            double netBillAmount = 0.00;
+
+            if (isTaxApplied == "Yes")
+            {
+                netBillAmount = Convert.ToDouble(txtNetAmnt.Text);
+            }
+            else
+            {
+                netBillAmount = totalBillAmount; // normal abill amount same
+            }
+
+
+
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                string sql = $@"INSERT INTO Bills1751 (RefNo, VouNo, BillDate, Vendor, Unit, CardNo, CardHld, AlcnNo, BillAmt) 
-                            VALUES (@RefNo, @VouNo, @BillDate, @Vendor, @Unit, @CardNo, @CardHld, @AlcnNo, @BillAmt)";
+                string sql = $@"INSERT INTO Bills1751 
+                                (RefNo, VouNo, BillDate, Vendor, Unit, CardNo, CardHld, AlcnNo, BillAmt, TaxApplied, TotalDeduct, TotalAdd, NetAmount) 
+                                VALUES 
+                                (@RefNo, @VouNo, @BillDate, @Vendor, @Unit, @CardNo, @CardHld, @AlcnNo, @BillAmt, @TaxApplied, @TotalDeduct, @TotalAdd, @NetAmount)";
+
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.Parameters.AddWithValue("@RefNo", refno);
                 cmd.Parameters.AddWithValue("@VouNo", billNo);
@@ -921,6 +969,10 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@CardHld", impCardHolder);
                 cmd.Parameters.AddWithValue("@AlcnNo", allocateHead);
                 cmd.Parameters.AddWithValue("@BillAmt", totalBillAmount);
+                cmd.Parameters.AddWithValue("@TaxApplied", isTaxApplied);
+                cmd.Parameters.AddWithValue("@TotalDeduct", totalDeduction);
+                cmd.Parameters.AddWithValue("@TotalAdd", totalAddition);
+                cmd.Parameters.AddWithValue("@NetAmount", netBillAmount);
                 //cmd.ExecuteNonQuery();
 
                 SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -945,9 +997,6 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
         // bill header ref no
         string billRefno = billReferenceNo;
 
-        // individual item ref no
-        string itemRefNo = GetItemRefID().ToString();
-
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
@@ -956,38 +1005,37 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
             {
                 int rowIndex = row.RowIndex;
 
-                // to skip the last custom totla bill row
-                if (rowIndex < (itemGrid.Rows.Count - 1))
-                {
-                    // Item, UOM, Price, Qty, Amount
-                    string item = itemsDT.Rows[rowIndex]["Item"].ToString();
-                    string uom = itemsDT.Rows[rowIndex]["UOM"].ToString();
+                // individual item ref no
+                string itemRefNo = GetItemRefID().ToString();
 
-                    double price = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Price"]) ? 0 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
-                    double qty = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Qty"]) ? 0 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
-                    double amount = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Amount"]) ? 0 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
+                // Item, UOM, Price, Qty, Amount
+                string item = itemsDT.Rows[rowIndex]["Item"].ToString();
+                string uom = itemsDT.Rows[rowIndex]["UOM"].ToString();
+
+                double price = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Price"]) ? 0.00 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
+                double qty = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Qty"]) ? 0.00 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
+                double amount = Convert.IsDBNull(itemsDT.Rows[rowIndex]["Amount"]) ? 0.00 : Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
 
 
-                    //double price = Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
-                    //double qty = Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
-                    //double amount = Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
+                //double price = Convert.ToDouble(itemsDT.Rows[rowIndex]["Price"]);
+                //double qty = Convert.ToDouble(itemsDT.Rows[rowIndex]["Qty"]);
+                //double amount = Convert.ToDouble(itemsDT.Rows[rowIndex]["Amount"]);
 
-                    // inserting bill item details
-                    string sql = $@"INSERT INTO Bills2751
-                                (RefNo, RefIDItem, Item, UOM, Price, Qty, Amount) 
-                                VALUES 
-                                (@RefNo, @RefIDItem, @Item, @UOM, @Price, @Qty, @Amount)";
+                // inserting bill item details
+                string sql = $@"INSERT INTO Bills2751 
+                                    (RefNo, RefIDItem, Item, UOM, Price, Qty, Amount) 
+                                    VALUES 
+                                    (@RefNo, @RefIDItem, @Item, @UOM, @Price, @Qty, @Amount)";
 
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    cmd.Parameters.AddWithValue("@RefNo", billRefno);
-                    cmd.Parameters.AddWithValue("@RefIDItem", itemRefNo);
-                    cmd.Parameters.AddWithValue("@Item", item);
-                    cmd.Parameters.AddWithValue("@UOM", uom);
-                    cmd.Parameters.AddWithValue("@Price", price);
-                    cmd.Parameters.AddWithValue("@Qty", qty);
-                    cmd.Parameters.AddWithValue("@Amount", amount);
-                    cmd.ExecuteNonQuery();
-                }
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@RefNo", billRefno);
+                cmd.Parameters.AddWithValue("@RefIDItem", itemRefNo);
+                cmd.Parameters.AddWithValue("@Item", item);
+                cmd.Parameters.AddWithValue("@UOM", uom);
+                cmd.Parameters.AddWithValue("@Price", price);
+                cmd.Parameters.AddWithValue("@Qty", qty);
+                cmd.Parameters.AddWithValue("@Amount", amount);
+                cmd.ExecuteNonQuery();
             }
 
             con.Close();
@@ -1199,10 +1247,15 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
     }
 
 
+
+
     //========================{ WorkFlow Bill Entry }==================================
 
     private bool InsertWorkFlowBillEntery(string billReferenceNo)
     {
+        // fetching the current logged-in user role
+        string userRole = Session["UserRole"].ToString(); // eg: Tech, system, applicant etc.
+
         // getting next desk from WorkFlow2 table
         DataTable workFlow2DT = GetNextDeskWorlFlow();
 
@@ -1223,7 +1276,7 @@ public partial class Bill_Entry_BillEntry : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@DocNo", billReferenceNo);
                 cmd.Parameters.AddWithValue("@Status", "New");
                 cmd.Parameters.AddWithValue("@Reason", "For Review");
-                cmd.Parameters.AddWithValue("@Desk1", "Tech"); // temporary without session
+                cmd.Parameters.AddWithValue("@Desk1", userRole);
                 cmd.Parameters.AddWithValue("@Desk2", desk2);
                 cmd.Parameters.AddWithValue("@Remarks", "System Genereted");
                 //cmd.ExecuteNonQuery();

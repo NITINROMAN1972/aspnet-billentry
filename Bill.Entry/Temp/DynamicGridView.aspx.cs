@@ -25,7 +25,7 @@ public partial class Temp_DynamicGridView : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "select * from Bills2751 where RefNo = @RefNo";
+            string sql = "select * from Bills1751 where RefNo = @RefNo";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@RefNo", "10214");
             cmd.ExecuteNonQuery();

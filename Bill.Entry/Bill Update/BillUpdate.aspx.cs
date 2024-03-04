@@ -28,17 +28,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         }
 
 
-     /*   if (!IsPostBack)
-        {
-            Bind_Search_BillNo_DD();
-
-            Bind_Search_Vendor_DD();
-            Bind_Search_Unit_DD();
-            Bind_Search_ImpstCardNo_DD();
-
-            Session["TotalBillAmount"] = "";
-        }*/
-
         // alert pop-up with only message
         //string message = $"Datatable : {}";
         //string script = $"alert('{message}');";

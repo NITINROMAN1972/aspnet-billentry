@@ -244,4 +244,15 @@ $(document).ready(function () {
             });
     });
 
+
+ /* $(function () {
+        $("[id*=itemGrid]").DataTable(
+            {
+                bLengthChange: true,
+                lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                bFilter: true,
+                bSort: true,
+                bPaginate: true
+            });*/
+    
 });

@@ -1,4 +1,24 @@
-﻿
+
+
+
+
+$(document).ready(function () {
+
+    // search bill no
+    $('#ddScBillNo').select2({
+        theme: 'classic',
+        placeholder: 'Select here.....',
+        allowClear: false,
+    });
+
+
+    // search vendor
+    $('#ddScVendor').select2({
+        theme: 'classic',
+        placeholder: 'Select here.....',
+        allowClear: false,
+    });
+==========================
 
 $(document).ready(function () {
 

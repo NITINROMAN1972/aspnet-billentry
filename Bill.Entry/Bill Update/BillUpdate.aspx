@@ -45,6 +45,7 @@
 
         <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true"></asp:ScriptManager>
 
+        <!-- Top Control Div STarts -->
         <div id="divTopSearch" runat="server" visible="true">
             <div class="col-md-11 mx-auto">
 
@@ -74,14 +75,14 @@
 
                                     <div class="row mb-2">
 
-                                        <!-- Search Bill No DD -->
+                                        <!-- Search Bill Ref No DD -->
                                         <div class="col-md-4 align-self-end">
                                             <div class="mb-1 text-body-tertiary fw-semibold fs-6">
-                                                <asp:Literal ID="Literal15" Text="" runat="server">Bill Number</asp:Literal>
+                                                <asp:Literal ID="Literal15" Text="" runat="server">Bill Reference Number</asp:Literal>
                                             </div>
                                             <asp:UpdatePanel ID="UpdatePanel3" runat="server">
                                                 <ContentTemplate>
-                                                    <asp:DropDownList ID="ddScBillNo" runat="server" OnSelectedIndexChanged="Search_BillNo_DD_Event" AutoPostBack="true" class="form-control is-invalid" CssClass=""></asp:DropDownList>
+                                                    <asp:DropDownList ID="ddScBillRefNo" runat="server" OnSelectedIndexChanged="Search_BillNo_DD_Event" AutoPostBack="true" class="form-control is-invalid" CssClass=""></asp:DropDownList>
                                                 </ContentTemplate>
                                             </asp:UpdatePanel>
                                         </div>
@@ -162,10 +163,10 @@
                     </div>
                 </div>
 
-                <!-- RA Search Control Grid -->
+                <!-- Search Grid Div Starts -->
                 <div id="searchGridDiv" visible="false" runat="server" class="mt-5">
                     <asp:GridView ShowHeaderWhenEmpty="true" ID="gridSearch" runat="server" AutoGenerateColumns="false" OnRowCommand="gridSearch_RowCommand" AllowPaging="true" PageSize="10"
-                        CssClass="table table-bordered border border-1 border-dark-subtle table-hover text-center grid-custom" OnPageIndexChanging="gridSearch_PageIndexChanging" PagerStyle-CssClass="gridview-pager">
+                        CssClass="datatable table table-bordered border border-1 border-dark-subtle table-hover text-center grid-custom" OnPageIndexChanging="gridSearch_PageIndexChanging" PagerStyle-CssClass="gridview-pager">
                         <HeaderStyle CssClass="" />
                         <Columns>
                             <asp:TemplateField ControlStyle-CssClass="col-md-1" HeaderText="Sr.No">
@@ -183,21 +184,24 @@
                             <asp:BoundField DataField="BillDate" HeaderText="Bill Date" ItemStyle-CssClass="col-xs-3 align-middle text-start fw-light" DataFormatString="{0:dd/MM/yyyy}" />
                             <asp:BoundField DataField="unitName" HeaderText="Unit / Office" ItemStyle-CssClass="col-xs-3 align-middle text-start fw-light" />
                             <asp:BoundField DataField="CardNo" HeaderText="Imprest Card No" ItemStyle-CssClass="col-xs-3 align-middle text-start fw-light" />
-                            <asp:BoundField DataField="BillAmt" HeaderText="Bill Amount" ItemStyle-CssClass="col-xs-3 align-middle text-start fw-light" />
+                            <asp:BoundField DataField="NetAmount" HeaderText="Net Bill Amount" ItemStyle-CssClass="col-xs-3 align-middle text-start fw-light" />
                             <asp:TemplateField HeaderText="Action">
                                 <ItemTemplate>
                                     <asp:LinkButton runat="server" ID="btnedit" CommandArgument='<%# Eval("RefNo") %>' CommandName="lnkView" ToolTip="Edit" CssClass="shadow-sm">
-                                       <asp:Image runat="server" ImageUrl="~/portal/assests/img/pencil-square.svg" AlternateText="Edit" style="width: 16px; height: 16px;"/>
+                                       <asp:Image runat="server" ImageUrl="../assests/img/pencil-square.svg" AlternateText="Edit" style="width: 16px; height: 16px;"/>
                                     </asp:LinkButton>
                                 </ItemTemplate>
                                 <ItemStyle HorizontalAlign="Center" Width="100px" />
                             </asp:TemplateField>
                         </Columns>
+                        <FooterStyle CssClass="" />
                     </asp:GridView>
                 </div>
+                <!-- Search Grid Div Ends -->
 
             </div>
         </div>
+        <!-- Top Control Div Ends -->
 
 
 
@@ -205,8 +209,7 @@
 
 
 
-
-
+        <!-- Update Div STarts -->
         <div id="UpdateDiv" runat="server" visible="false">
 
             <!-- Heading -->
@@ -215,7 +218,7 @@
             </div>
 
 
-            <!-- UI -->
+            <!-- Top Details UI Panel Starts -->
             <div class="card col-md-11 mx-auto mt-2 py-2 shadow-sm rounded-3">
                 <div class="card-body">
 
@@ -300,6 +303,7 @@
 
                 </div>
             </div>
+             <!-- Top Details UI Panel Ends -->
 
 
 
@@ -313,10 +317,12 @@
                         <asp:Literal Text="Item Details" runat="server"></asp:Literal>
                     </div>
 
-                    <!-- Item Insert -->
+                    <!-- Item Insert Ui Starts -->
                     <div class="mt-3 py-2 rounded-3">
                         <div class="">
                             <div class="row mb-2">
+
+                                <!-- DD Item -->
                                 <div class="col-md-3 align-self-end ">
                                     <div class="mb-1 text-body-tertiary fw-semibold fs-6">
                                         <asp:Literal ID="Literal7" Text="" runat="server">Item<em style="color: red">*</em></asp:Literal>
@@ -326,6 +332,8 @@
                                     </div>
                                     <asp:DropDownList ID="ddItem" runat="server" AutoPostBack="false" class="form-control is-invalid" CssClass=""></asp:DropDownList>
                                 </div>
+
+                                 <!-- DD UOM -->
                                 <div class="col-md-3 align-self-end">
                                     <div class="mb-1 text-body-tertiary fw-semibold fs-6">
                                         <asp:Literal ID="Literal8" Text="" runat="server">UOM<em style="color: red">*</em></asp:Literal>
@@ -335,6 +343,8 @@
                                     </div>
                                     <asp:DropDownList ID="ddUOM" runat="server" AutoPostBack="false" class="form-control is-invalid" CssClass=""></asp:DropDownList>
                                 </div>
+
+                                 <!-- TB Bill No -->
                                 <div class="col-md-2 align-self-end">
                                     <div class="mb-1 text-body-tertiary fw-semibold fs-6">
                                         <asp:Literal ID="Literal9" Text="Bill Number" runat="server">Price</asp:Literal>
@@ -344,6 +354,8 @@
                                     </div>
                                     <asp:TextBox runat="server" ID="txtPrice" type="text" CssClass="form-control border border-secondary-subtle bg-light rounded-1 fs-6 fw-light py-1"></asp:TextBox>
                                 </div>
+
+                                 <!-- TB QTY -->
                                 <div class="col-md-2 align-self-end">
                                     <div class="mb-1 text-body-tertiary fw-semibold fs-6">
                                         <asp:Literal ID="Literal11" Text="" runat="server">Quantity</asp:Literal>
@@ -354,6 +366,7 @@
                                     <asp:TextBox runat="server" ID="txtQty" type="number" CssClass="form-control border border-secondary-subtle bg-light rounded-1 fs-6 fw-light py-1"></asp:TextBox>
                                 </div>
 
+                                 <!-- BTN Add -->
                                 <div class="col-md-2 align-self-end text-end">
                                     <div class="pb-0 mb-0 mb-0">
                                         <asp:Button ID="btnItemInsert" runat="server" Text="Add  +" OnClick="btnItemInsert_Click" ValidationGroup="ItemSave" CssClass="btn btn-success text-white shadow mb-5 col-md-7 button-position" />
@@ -363,8 +376,9 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Item Insert Ui Ends -->
 
-                    <!-- Item GridView -->
+                    <!-- Item GridView UI Starts -->
                     <div id="itemDiv" runat="server" visible="false" class="mt-3">
                         <asp:GridView ShowHeaderWhenEmpty="true" ID="itemGrid" runat="server" AutoGenerateColumns="false" OnRowDeleting="Grid_RowDeleting"
                             CssClass="table table-bordered  border border-1 border-dark-subtle text-center grid-custom mb-3">
@@ -426,6 +440,7 @@
                         </div>
 
                         <div id="divTaxHead" runat="server" visible="false">
+
                             <!-- Tax Grid -->
                             <asp:GridView ShowHeaderWhenEmpty="true" ID="GridTax" runat="server" AutoGenerateColumns="false" OnRowDataBound="GridTax_RowDataBound" CssClass="table text-center">
                                 <HeaderStyle CssClass="align-middle table-secondary fw-light" />
@@ -433,13 +448,13 @@
 
                                     <asp:TemplateField HeaderText="Account Head" ItemStyle-Font-Size="15px" ItemStyle-CssClass="col-md-4 align-middle text-start fw-light">
                                         <ItemTemplate>
-                                            <asp:TextBox ID="AcHName" runat="server" Enabled="false" CssClass="col-md-9 fw-light bg-white border-0 py-1 px-2" Text='<%# Bind("AcHName") %>'></asp:TextBox>
+                                            <asp:TextBox ID="AcHName" Text='<%# Bind("AcHName") %>' runat="server" Enabled="false" CssClass="col-md-9 fw-light bg-white border-0 py-1 px-2"></asp:TextBox>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 
                                     <asp:TemplateField HeaderText="Factor in %" ItemStyle-Font-Size="15px" ItemStyle-CssClass="col-md-2 align-middle">
                                         <ItemTemplate>
-                                            <asp:TextBox ID="FactorInPer" runat="server" Enabled="true" CssClass="col-md-9 fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2" type="number" Text='<%# Bind("FactorInPer") %>'></asp:TextBox>
+                                            <asp:TextBox ID="FactorInPer" Text='<%# Bind("FactorInPer") %>' type="number" step="0.01" title="Enter a number two decimals" runat="server" Enabled="true" CssClass="col-md-9 fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2"></asp:TextBox>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 
@@ -463,7 +478,7 @@
 
                                     <asp:TemplateField HeaderText="Amount" ItemStyle-Font-Size="15px" ItemStyle-CssClass="col-md-3 align-middle">
                                         <ItemTemplate>
-                                            <asp:TextBox ID="TaxAmount" runat="server" Enabled="true" ReadOnly="true" CssClass="col-md-9 fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2" type="number" Text='<%# Bind("TaxAmount") %>'></asp:TextBox>
+                                            <asp:TextBox ID="TaxAmount" Text='<%# Bind("TaxAmount") %>' type="number" step="0.01" runat="server" Enabled="true" ReadOnly="true" CssClass="col-md-9 fw-light border border-secondary-subtle shadow-sm rounded-1 py-1 px-2"></asp:TextBox>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 
@@ -515,52 +530,7 @@
 
 
                     </div>
-
-                    <!-- Heading -->
-                    <div class="border-top border-bottom border-secondary-subtle py-2 mt-4">
-                        <div class="fw-normal fs-5 fw-medium text-body-secondary">
-                            <asp:Literal Text="Document Upload" runat="server"></asp:Literal>
-                        </div>
-                    </div>
-
-                    <!-- Documents upload -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mt-4 input-group has-validation">
-                                <asp:FileUpload ID="fileDoc" runat="server" CssClass="form-control" aria-describedby="inputGroupPrepend" />
-                                <asp:Button ID="btnDocUpload" OnClick="btnDocUpload_Click" runat="server" Text="Upload  +" AutoPost="true" CssClass="btn btn-custom btn-outline-secondary" />
-                            </div>
-                            <h6 class="pt-3 fw-lighter fs-6 text-secondary-subtle">User can upload multiple documents using upload button !</h6>
-                        </div>
-                        <div class="col-md-6"></div>
-                    </div>
-
-                    <!-- Document Grid -->
-                    <div id="docGrid" class="mt-5" runat="server" visible="false">
-                        <asp:GridView ShowHeaderWhenEmpty="true" ID="GridDocument" EnableViewState="true" runat="server" AutoGenerateColumns="false"
-                            CssClass="table table-bordered border border-light-subtle text-start mt-3 grid-custom">
-                            <HeaderStyle CssClass="align-middle fw-light fs-6" />
-                            <Columns>
-                                <asp:TemplateField ControlStyle-CssClass="col-md-1" HeaderText="Sr.No">
-                                    <ItemTemplate>
-                                        <asp:HiddenField ID="id" runat="server" Value="id" />
-                                        <span>
-                                            <%#Container.DataItemIndex + 1%>
-                                        </span>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-
-                                <asp:BoundField DataField="DocName" HeaderText="File Name" ReadOnly="true" ItemStyle-Font-Size="15px" ItemStyle-CssClass="align-middle text-start fw-light" />
-
-                                <asp:TemplateField HeaderText="View Document" ItemStyle-Font-Size="15px" ItemStyle-CssClass="align-middle text-start fw-light">
-                                    <ItemTemplate>
-                                        <asp:HyperLink ID="DocPath" runat="server" Text="View Uploaded Document" NavigateUrl='<%# Eval("DocPath") %>' Target="_blank" CssClass="text-decoration-none"></asp:HyperLink>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-
-                            </Columns>
-                        </asp:GridView>
-                    </div>
+                    <!-- Item GridView UI Ends -->
 
 
                     <!-- Submit Button -->
@@ -583,6 +553,7 @@
 
 
         </div>
+        <!-- Update Div Ends-->
 
 
     </form>

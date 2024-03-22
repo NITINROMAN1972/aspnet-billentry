@@ -18,7 +18,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            Bind_Search_BillNo_DD();
+            Bind_Search_BillRefNo_DD();
 
             Bind_Search_Vendor_DD();
             Bind_Search_Unit_DD();
@@ -26,7 +26,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
             Session["TotalBillAmount"] = "";
         }
-
 
         // alert pop-up with only message
         //string message = $"Datatable : {}";
@@ -45,7 +44,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
     //=========================={ Sweet Alert JS }==========================
 
-    // sweet alert - success only
     private void getSweetAlertSuccessOnly()
     {
         string title = "Saved!";
@@ -163,7 +161,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
     //=========================={ Binding Search Dropdowns }==========================
 
-    private void Bind_Search_BillNo_DD()
+    private void Bind_Search_BillRefNo_DD()
     {
         using (SqlConnection con = new SqlConnection(connectionString))
         {
@@ -177,11 +175,11 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             ad.Fill(dt);
             con.Close();
 
-            ddScBillNo.DataSource = dt;
-            ddScBillNo.DataTextField = "VouNo";
-            ddScBillNo.DataValueField = "VouNo";
-            ddScBillNo.DataBind();
-            ddScBillNo.Items.Insert(0, new ListItem("------Select Bill No------", "0"));
+            ddScBillRefNo.DataSource = dt;
+            ddScBillRefNo.DataTextField = "RefNo";
+            ddScBillRefNo.DataValueField = "RefNo";
+            ddScBillRefNo.DataBind();
+            ddScBillRefNo.Items.Insert(0, new ListItem("------ Select Bill Ref No ------", "0"));
         }
     }
 
@@ -203,7 +201,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             ddScVendor.DataTextField = "vName";
             ddScVendor.DataValueField = "RefID";
             ddScVendor.DataBind();
-            ddScVendor.Items.Insert(0, new ListItem("------Select Vendor------", "0"));
+            ddScVendor.Items.Insert(0, new ListItem("------ Select Vendor ------", "0"));
         }
     }
 
@@ -225,7 +223,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             ddScUnit.DataTextField = "unitName";
             ddScUnit.DataValueField = "unitCode";
             ddScUnit.DataBind();
-            ddScUnit.Items.Insert(0, new ListItem("------Select Unit / Office------", "0"));
+            ddScUnit.Items.Insert(0, new ListItem("------ Select Unit / Office ------", "0"));
         }
     }
 
@@ -247,14 +245,14 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
             ddScImpstCardNo.DataTextField = "icNumber";
             ddScImpstCardNo.DataValueField = "RefID";
             ddScImpstCardNo.DataBind();
-            ddScImpstCardNo.Items.Insert(0, new ListItem("------Select Imprest Card No------", "0"));
+            ddScImpstCardNo.Items.Insert(0, new ListItem("------ Select Imprest Card No ------", "0"));
         }
     }
 
     // event not needed here
     protected void Search_BillNo_DD_Event(object sender, EventArgs e)
     {
-        string billNo = ddScBillNo.SelectedValue;
+        string billNo = ddScBillRefNo.SelectedValue;
     }
     protected void Search_Vendor_DD_Event(object sender, EventArgs e)
     {
@@ -283,14 +281,14 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         gridSearch.DataBind();
     }
 
-    private DataTable GetBillNumberDT(string billNo)
+    private DataTable GetBillDT(string billRefNo)
     {
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "select * from Bills1751 where VouNo = @VouNo";
+            string sql = "select * from Bills1751 where RefNo = @RefNo";
             SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@VouNo", billNo);
+            cmd.Parameters.AddWithValue("@RefNo", billRefNo);
             cmd.ExecuteNonQuery();
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -383,7 +381,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "select * from AcHeads751";
+            string sql = "select * from AcHeads751 as ach INNER JOIN AcHeadGroups751 as acg ON ach.AcHGName = acg.AHGCode where acg.AHGCode = 'DT001'";
             SqlCommand cmd = new SqlCommand(sql, con);
             //cmd.Parameters.AddWithValue("@BillRefNo", billRefNo);
             cmd.ExecuteNonQuery();
@@ -415,7 +413,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         searchGridDiv.Visible = true;
 
         // dropdown values
-        string billNo = ddScBillNo.SelectedValue;
+        string billRefNo = ddScBillRefNo.SelectedValue; // bill erf no
 
         string vendorRefID = ddScVendor.SelectedValue;
         string unitRefID = ddScUnit.SelectedValue;
@@ -433,20 +431,20 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
 
         // DTs
-        DataTable billDT = GetBillNumberDT(billNo);
+        DataTable billDT = GetBillDT(billRefNo);
 
         DataTable vendorDT = GetVendorDT(vendorRefID);
         DataTable unitDT = GetUnitDT(unitRefID);
         DataTable imprestCardDT = GetImprestCardDT(imprestCardRefID);
 
         // dt values
-        string billNumber = (billDT.Rows.Count > 0) ? billDT.Rows[0]["VouNo"].ToString() : string.Empty;
+        string billRefNumber = (billDT.Rows.Count > 0) ? billDT.Rows[0]["RefNo"].ToString() : string.Empty;
 
         string vendorName = (vendorDT.Rows.Count > 0) ? vendorDT.Rows[0]["vName"].ToString() : string.Empty;
         string unitName = (unitDT.Rows.Count > 0) ? unitDT.Rows[0]["unitCode"].ToString() : string.Empty;
         string imprestCardNo = (imprestCardDT.Rows.Count > 0) ? imprestCardDT.Rows[0]["icNumber"].ToString() : string.Empty;
 
-        DataTable searchResultDT = SearchRecords(billNumber, fromDate, toDate, vendorName, unitName, imprestCardNo);
+        DataTable searchResultDT = SearchRecords(billRefNumber, fromDate, toDate, vendorName, unitName, imprestCardNo);
 
         // binding the search grid
         gridSearch.DataSource = searchResultDT;
@@ -455,11 +453,12 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         //Required for jQuery DataTables to work.
         gridSearch.UseAccessibleHeader = true;
         gridSearch.HeaderRow.TableSection = TableRowSection.TableHeader;
+        //gridSearch.FooterRow.TableSection = TableRowSection.TableHeader;
 
         Session["PaginationDataSource"] = searchResultDT;
     }
 
-    public DataTable SearchRecords(string billNumber, DateTime fromDate, DateTime toDate, string vendorName, string unitName, string imprestCardNo)
+    public DataTable SearchRecords(string billRefNumber, DateTime fromDate, DateTime toDate, string vendorName, string unitName, string imprestCardNo)
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -470,9 +469,9 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
                             on bill.Unit = unit.unitCode 
                             WHERE 1=1";
 
-            if (!string.IsNullOrEmpty(billNumber))
+            if (!string.IsNullOrEmpty(billRefNumber))
             {
-                sql += " AND VouNo = @VouNo";
+                sql += " AND RefNo = @RefNo";
             }
 
             if (fromDate != null)
@@ -503,11 +502,14 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
             sql += " ORDER BY RefNo DESC";
 
+
+
+
             using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                if (!string.IsNullOrEmpty(billNumber))
+                if (!string.IsNullOrEmpty(billRefNumber))
                 {
-                    command.Parameters.AddWithValue("@VouNo", billNumber);
+                    command.Parameters.AddWithValue("@RefNo", billRefNumber);
                 }
 
                 if (fromDate != null)
@@ -549,6 +551,7 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
 
 
+
     //=========================={ Update - Fill Bill & Item Details }==========================
     protected void gridSearch_RowCommand(object sender, GridViewCommandEventArgs e)
     {
@@ -570,9 +573,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
             // filling item tax head gridview
             FillTaxHead();
-
-            // binding doc gridview
-            FillBillDocUpload(rowId);
         }
     }
 
@@ -732,31 +732,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         }
     }
 
-    private void FillBillDocUpload(int billRefNo)
-    {
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-            string sql = "select * from BillDocUpload751 where BillRefID = @BillRefID";
-            SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@BillRefID", billRefNo.ToString());
-            cmd.ExecuteNonQuery();
-
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            ad.Fill(dt);
-            con.Close();
-
-            docGrid.Visible = true;
-
-            GridDocument.DataSource = dt;
-            GridDocument.DataBind();
-
-            ViewState["DocDetailsDataTable"] = dt;
-            Session["DocUploadDT"] = dt;
-        }
-    }
-
 
 
 
@@ -785,25 +760,11 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
                 // re-calculating total amount n assigning back to textbox
                 double? totalBillAmount = dt.AsEnumerable().Sum(row => row["Amount"] is DBNull ? (double?)null : Convert.ToDouble(row["Amount"])) ?? 0.0;
                 txtBillAmount.Text = totalBillAmount.HasValue ? totalBillAmount.Value.ToString("N2") : "0.00";
-            }
-        }
 
-        // document gridview
-        if (gridView.ID == "GridDocument")
-        {
-            int rowIndex = e.RowIndex;
+                Session["TotalBillAmount"] = Convert.ToDouble(txtBillAmount.Text);
 
-            DataTable dt = Session["DocUploadDT"] as DataTable;
-
-            if (dt != null && dt.Rows.Count > rowIndex)
-            {
-                dt.Rows.RemoveAt(rowIndex);
-
-                ViewState["DocDetailsDataTable"] = dt;
-                Session["DocUploadDT"] = dt;
-
-                GridDocument.DataSource = dt;
-                GridDocument.DataBind();
+                // re-calculating taxs
+                FillTaxHead();
             }
         }
     }
@@ -1191,110 +1152,6 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
 
 
-    //=========================={ Document Upload Click Event }==========================
-    protected void btnDocUpload_Click(object sender, EventArgs e)
-    {
-        // setting the file size in web.config file (web.config should not be read only)
-        //settingHttpRuntimeForFileSize();
-
-        if (fileDoc.HasFile)
-        {
-            string FileExtension = System.IO.Path.GetExtension(fileDoc.FileName);
-
-            if (FileExtension == ".xlsx" || FileExtension == ".xls")
-            {
-
-            }
-
-            // file name
-            string onlyFileNameWithExtn = fileDoc.FileName.ToString();
-
-            // getting unique file name
-            string strFileName = GenerateUniqueId(onlyFileNameWithExtn);
-
-            // saving and getting file path
-            string filePath = getServerFilePath(strFileName);
-
-            // Retrieve DataTable from ViewState or create a new one
-            DataTable dt = ViewState["DocDetailsDataTable"] as DataTable ?? CreateDocDetailsDataTable();
-
-            // filling document details datatable
-            AddRowToDocDetailsDataTable(dt, onlyFileNameWithExtn, filePath);
-
-            // Save DataTable to ViewState
-            ViewState["DocDetailsDataTable"] = dt;
-            Session["DocUploadDT"] = dt;
-
-            if (dt.Rows.Count > 0)
-            {
-                docGrid.Visible = true;
-
-                // binding document details gridview
-                GridDocument.DataSource = dt;
-                GridDocument.DataBind();
-            }
-        }
-    }
-
-    private string GenerateUniqueId(string strFileName)
-    {
-        long timestamp = DateTime.Now.Ticks;
-        //string guid = Guid.NewGuid().ToString("N"); //N to remove hypen "-" from GUIDs
-        string guid = Guid.NewGuid().ToString();
-        string uniqueID = timestamp + "_" + guid + "_" + strFileName;
-        return uniqueID;
-    }
-
-    private string getServerFilePath(string strFileName)
-    {
-        string orgFilePath = Server.MapPath("~/Portal/Public/" + strFileName);
-
-        // saving file
-        fileDoc.SaveAs(orgFilePath);
-
-        //string filePath = Server.MapPath("~/Portal/Public/" + strFileName);
-        //file:///C:/HostingSpaces/PAWAN/cdsmis.in/wwwroot/Pms2/Portal/Public/638399011215544557_926f9320-275e-49ad-8f59-32ecb304a9f1_EMB%20Recording.pdf
-
-        // replacing server-specific path with the desired URL
-        string baseUrl = "http://101.53.144.92/secr/Ginie/External?url=..";
-        string relativePath = orgFilePath.Replace(Server.MapPath("~/Portal/Public/"), "Portal/Public/");
-
-        // Full URL for the hyperlink
-        string fullUrl = $"{baseUrl}/{relativePath}";
-
-        return fullUrl;
-    }
-
-    private DataTable CreateDocDetailsDataTable()
-    {
-        DataTable dt = new DataTable();
-
-        // file name
-        DataColumn DocName = new DataColumn("DocName", typeof(string));
-        dt.Columns.Add(DocName);
-
-        // Doc uploaded path
-        DataColumn DocPath = new DataColumn("DocPath", typeof(string));
-        dt.Columns.Add(DocPath);
-
-        return dt;
-    }
-
-    private void AddRowToDocDetailsDataTable(DataTable dt, string onlyFileNameWithExtn, string filePath)
-    {
-        // Create a new row
-        DataRow row = dt.NewRow();
-
-        // Set values for the new row
-        row["DocName"] = onlyFileNameWithExtn;
-        row["DocPath"] = filePath;
-
-        // Add the new row to the DataTable
-        dt.Rows.Add(row);
-    }
-
-
-
 
     //=========================={ Submit Button Click Event }==========================
     protected void btnBack_Click(object sender, EventArgs e)
@@ -1304,8 +1161,10 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        if (GridDocument.Rows.Count > 0)
+        if(itemGrid.Rows.Count > 0)
         {
+            string billRefno = txtRefNo.Text.ToString();
+
             // updating bill head
             UpdateBillHeader();
 
@@ -1320,16 +1179,11 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
                 UpdateBillTaxHeads();
             }
 
-            // updating bill doc uploads
-            UpdateBillDocDetails();
-
-            //Response.Redirect("BillUpdate.aspx");
-            //btnSubmit.Enabled = false;
-            Response.Redirect("BillUpdate.aspx");
+            getSweetAlertSuccessRedirectMandatory("Bill Updated Successfully", $"The Bill With Reference No: {billRefno}, Updated Successfully", "BillUpdate.aspx");
         }
         else
         {
-
+            getSweetAlertErrorMandatory("No Items Found!", "Please Add Minimum 1 Service/Cell To Proceed");
         }
     }
 
@@ -1337,15 +1191,34 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
     {
         string billRefno = txtRefNo.Text.ToString();
 
+        DataTable BillHeaderDT = (DataTable)Session["HeaderDataTable"];
+
         //double totalBillAmount = Convert.ToDouble(Session["TotalBillAmount"]);
         double totalBillAmount = Convert.ToDouble(txtBillAmount.Text);
+
+
+        // total add, deduct and net amount
+        string isTaxApplied = ddTaxOrNot.Text.ToString();
+
+        double totalDeduction = Convert.ToDouble(txtTotalDeduct.Text);
+        double totalAddition = Convert.ToDouble(txtTotalAdd.Text);
+        double netBillAmount = 0.00;
+
+        if (isTaxApplied == "Yes") netBillAmount = Convert.ToDouble(txtNetAmnt.Text);
+        else netBillAmount = totalBillAmount; // normal bill amount same as total bill amount
+
+
 
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = $@"UPDATE Bills1751 SET BillAmt = @BillAmt WHERE RefNo = @RefNo";
+            string sql = $@"UPDATE Bills1751 SET BillAmt=@BillAmt, TaxApplied=@TaxApplied, TotalDeduct=@TotalDeduct, TotalAdd=@TotalAdd, NetAmount=@NetAmount WHERE RefNo=@RefNo";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@BillAmt", totalBillAmount);
+            cmd.Parameters.AddWithValue("@TaxApplied", isTaxApplied);
+            cmd.Parameters.AddWithValue("@TotalDeduct", totalDeduction);
+            cmd.Parameters.AddWithValue("@TotalAdd", totalAddition);
+            cmd.Parameters.AddWithValue("@NetAmount", netBillAmount);
             cmd.Parameters.AddWithValue("@RefNo", billRefno);
             cmd.ExecuteNonQuery();
 
@@ -1610,93 +1483,5 @@ public partial class Bill_Update_BillUpdate : System.Web.UI.Page
         }
     }
 
-
-
-
-    private void UpdateBillDocDetails()
-    {
-        string billRefno = txtRefNo.Text.ToString();
-
-        DataTable documentsDT = (DataTable)Session["DocUploadDT"];
-
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-
-            foreach (GridViewRow row in GridDocument.Rows)
-            {
-                int rowIndex = row.RowIndex;
-
-                string docName = documentsDT.Rows[rowIndex]["DocName"].ToString();
-
-                HyperLink hypDocPath = (HyperLink)row.FindControl("DocPath");
-                string docPath = hypDocPath.NavigateUrl;
-
-                string docRefid = documentsDT.Rows[rowIndex]["RefID"].ToString();
-
-                bool isDocExist = checkForDocuUploadedExist(docRefid);
-
-                if (isDocExist)
-                {
-
-                }
-                else
-                {
-                    int docRefID = getDocRefID(); // new doc RefID
-
-                    string sql = $@"INSERT INTO BillDocUpload751
-                                    (RefID, BillRefID, DocName, DocPath) 
-                                    values 
-                                    (@RefID, @BillRefID, @DocName, @DocPath)";
-
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    cmd.Parameters.AddWithValue("@RefID", docRefID);
-                    cmd.Parameters.AddWithValue("@BillRefID", billRefno);
-                    cmd.Parameters.AddWithValue("@DocName", docName);
-                    cmd.Parameters.AddWithValue("@DocPath", docPath);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-
-            con.Close();
-        }
-    }
-
-    private int getDocRefID()
-    {
-        string nextRefID = "10001";
-
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-            string sql = "SELECT ISNULL(MAX(CAST(RefID AS INT)), 10000) + 1 AS NextRefID FROM BillDocUpload751";
-            SqlCommand cmd = new SqlCommand(sql, con);
-
-            object result = cmd.ExecuteScalar();
-            if (result != null && result != DBNull.Value) { nextRefID = result.ToString(); }
-            return Convert.ToInt32(nextRefID);
-        }
-    }
-
-    private bool checkForDocuUploadedExist(string docRefID)
-    {
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-            string sql = "SELECT * FROM BillDocUpload751 WHERE RefID=@RefID";
-
-            SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@RefID", docRefID);
-            cmd.ExecuteNonQuery();
-
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            ad.Fill(dt);
-            con.Close();
-
-            if (dt.Rows.Count > 0) return true;
-            else return false;
-        }
-    }
 
 }

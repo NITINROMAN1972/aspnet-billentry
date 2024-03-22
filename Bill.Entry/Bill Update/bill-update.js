@@ -1,8 +1,9 @@
+﻿
 
 $(document).ready(function () {
 
     // search bill no
-    $('#ddScBillNo').select2({
+    $('#ddScBillRefNo').select2({
         theme: 'classic',
         placeholder: 'Select here.....',
         allowClear: false,
@@ -103,7 +104,7 @@ $(document).ready(function () {
         setTimeout(function () {
 
             // search bill no
-            $('#ddScBillNo').select2({
+            $('#ddScBillRefNo').select2({
                 theme: 'classic',
                 placeholder: 'Select here.....',
                 allowClear: false,
@@ -193,54 +194,7 @@ $(document).ready(function () {
         }, 0);
     });
 
+ 
 
 
-
-
-
-
-
-    $('#gridSearch').DataTable({
-        //scrollY: "420px",
-        scrollX: false,
-        scrollCollapse: false,
-        paging: true,
-        searching: true,
-        ordering: true,
-        info: true,
-        lengthChange: true,
-        responsive: true,
-        pagingType: 'full_numbers',
-
-        lengthMenu: [
-            [10, 25, 50, -1],
-            [10, 25, 50, 'All']
-        ],
-
-        search: {
-            return: false
-        },
-        initComplete: function () {
-            $('.dataTables_filter input').attr('placeholder', ' search here......')
-                .before('<span class="search-icon"><img src="/img/icons/search.svg" alt="Search Icon" style="height: 1em; width: auto;" /></span>');
-        },
-
-        language: {
-            search: "",
-            decimal: ',',
-            thousands: '.'
-        },
-    });
-
-    $(function () {
-        $("[id*=itemGrid]").DataTable(
-            {
-                bLengthChange: true,
-                lengthMenu: [[5, 10, -1], [5, 10, "All"]],
-                bFilter: true,
-                bSort: true,
-                bPaginate: true
-            });
-    });
-    
 });
